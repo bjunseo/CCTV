@@ -1,0 +1,10 @@
+C:\Users\NCC\Desktop\CCTV-master\CCTV_Server\CCTV_Server\bin\Debug\CCTV_Server.exe.config
+C:\Users\NCC\Desktop\CCTV-master\CCTV_Server\CCTV_Server\bin\Debug\CCTV_Server.exe
+C:\Users\NCC\Desktop\CCTV-master\CCTV_Server\CCTV_Server\bin\Debug\CCTV_Server.pdb
+C:\Users\NCC\Desktop\CCTV-master\CCTV_Server\CCTV_Server\obj\Debug\CCTV_Server.csproj.AssemblyReference.cache
+C:\Users\NCC\Desktop\CCTV-master\CCTV_Server\CCTV_Server\obj\Debug\CCTV_Server.Properties.Resources.resources
+C:\Users\NCC\Desktop\CCTV-master\CCTV_Server\CCTV_Server\obj\Debug\CCTV_Server.csproj.GenerateResource.cache
+C:\Users\NCC\Desktop\CCTV-master\CCTV_Server\CCTV_Server\obj\Debug\CCTV_Server.csproj.CoreCompileInputs.cache
+C:\Users\NCC\Desktop\CCTV-master\CCTV_Server\CCTV_Server\obj\Debug\CCTV_Server.exe
+C:\Users\NCC\Desktop\CCTV-master\CCTV_Server\CCTV_Server\obj\Debug\CCTV_Server.pdb
+C:\Users\NCC\Desktop\CCTV-master\CCTV_Server\CCTV_Server\obj\Debug\CCTV_Server.Form1.resources
