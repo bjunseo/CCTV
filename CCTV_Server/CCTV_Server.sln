@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCTV_Server", "CCTV_Server\CCTV_Server.csproj", "{DBED2966-0DF3-4CDB-A6E2-EFEE5711901D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DBED2966-0DF3-4CDB-A6E2-EFEE5711901D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBED2966-0DF3-4CDB-A6E2-EFEE5711901D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBED2966-0DF3-4CDB-A6E2-EFEE5711901D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBED2966-0DF3-4CDB-A6E2-EFEE5711901D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {47ADDB7B-4030-4D29-9DCB-AC158659DBB7}
+	EndGlobalSection
+EndGlobal
