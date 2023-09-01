@@ -15,7 +15,7 @@ using OpenCvSharp;
 using System.IO;
 using System.Threading;
 using System.Diagnostics.Tracing;
-
+using Microsoft.Win32;
 
 namespace CCTV_Server
 {
@@ -32,12 +32,16 @@ namespace CCTV_Server
 
         Thread frameDecodeThread;
 
+        string cctvIP;
+
         // After adding the DLL to the project, change the "Copy to Output Directory" value to "Copy If newer".
         string dllPath = Path.Combine(Environment.CurrentDirectory, "FFmpeg.AutoGen", "bin", "x64");
-
-        string rtspAddr = "rtsp://admin:dmenc001!@192.168.0.250:554/ISAPI/streaming/channels/101";
-        string httpAddr = "http://admin:dmenc001!@192.168.0.250:80/ISAPI/Streaming/channels/102/httpPreview";
+        
+        string rtspAddr;
+        string httpAddr;
         string url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+
+        
 
         #endregion
 
@@ -66,6 +70,20 @@ namespace CCTV_Server
         {
             InitializeComponent();
 
+            
+        }
+        #endregion
+
+        #region 폼로드
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            setView();
+            Start();
+
+            rtspAddr = $"rtsp://admin:dmenc001!@{cctvIP}:554/ISAPI/streaming/channels/101";
+            httpAddr = $"http://admin:dmenc001!@{cctvIP}:80/ISAPI/Streaming/channels/102/httpPreview";
+
+
             frameDecodeThread = new Thread(new ThreadStart(Run_frameDecodeThread));
             frameDecodeThread.IsBackground = true;
             FFmpegBinariesHelper.RegisterFFmpegBinaries(dllPath);
@@ -74,13 +92,15 @@ namespace CCTV_Server
         }
         #endregion
 
-        #region 폼로드
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            Start();
-        }
-        #endregion
 
+        public void setView()
+        {
+            RegistryKey reg;
+            reg = Registry.CurrentUser.CreateSubKey("Software").CreateSubKey("CCTVSERVER");
+
+            cctvIP = reg.GetValue("CCTVIP", "값이 없습니다").ToString();
+            txtCCTVIip.Text = cctvIP;
+        }
 
         #region client 클래스
         public class AsyncObject
@@ -177,5 +197,13 @@ namespace CCTV_Server
         {
             tcpServer.sendData();
     }
+
+        private void btnCCTVsave_Click(object sender, EventArgs e)
+        {
+            RegistryKey reg;
+            reg = Registry.CurrentUser.CreateSubKey("Software").CreateSubKey("CCTVSERVER");
+
+            reg.SetValue("CCTVIP", txtCCTVIip.Text);
+        }
     }
 }

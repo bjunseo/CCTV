@@ -35,10 +35,11 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.CCTV = new System.Windows.Forms.GroupBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtCCTVIip = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnUser = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.btnCCTVsave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -106,7 +107,7 @@
             this.groupBox1.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.groupBox1.Location = new System.Drawing.Point(372, 7);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(238, 132);
+            this.groupBox1.Size = new System.Drawing.Size(238, 122);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
@@ -114,22 +115,23 @@
             // CCTV
             // 
             this.CCTV.BackColor = System.Drawing.SystemColors.Control;
-            this.CCTV.Controls.Add(this.textBox2);
+            this.CCTV.Controls.Add(this.btnCCTVsave);
+            this.CCTV.Controls.Add(this.txtCCTVIip);
             this.CCTV.Controls.Add(this.label1);
             this.CCTV.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.CCTV.Location = new System.Drawing.Point(127, 7);
             this.CCTV.Name = "CCTV";
-            this.CCTV.Size = new System.Drawing.Size(239, 132);
+            this.CCTV.Size = new System.Drawing.Size(239, 122);
             this.CCTV.TabIndex = 6;
             this.CCTV.TabStop = false;
             this.CCTV.Text = "CCTV";
             // 
-            // textBox2
+            // txtCCTVIip
             // 
-            this.textBox2.Location = new System.Drawing.Point(64, 34);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(150, 21);
-            this.textBox2.TabIndex = 1;
+            this.txtCCTVIip.Location = new System.Drawing.Point(64, 34);
+            this.txtCCTVIip.Name = "txtCCTVIip";
+            this.txtCCTVIip.Size = new System.Drawing.Size(150, 21);
+            this.txtCCTVIip.TabIndex = 1;
             // 
             // label1
             // 
@@ -158,6 +160,16 @@
             this.button1.Text = "신호";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnCCTVsave
+            // 
+            this.btnCCTVsave.Location = new System.Drawing.Point(27, 78);
+            this.btnCCTVsave.Name = "btnCCTVsave";
+            this.btnCCTVsave.Size = new System.Drawing.Size(187, 23);
+            this.btnCCTVsave.TabIndex = 2;
+            this.btnCCTVsave.Text = "등록";
+            this.btnCCTVsave.UseVisualStyleBackColor = true;
+            this.btnCCTVsave.Click += new System.EventHandler(this.btnCCTVsave_Click);
             // 
             // Form1
             // 
@@ -191,8 +203,9 @@
         private System.Windows.Forms.Button btnUser;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtCCTVIip;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnCCTVsave;
     }
 }
 

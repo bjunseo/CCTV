@@ -43,32 +43,36 @@ namespace CCTV_Server
 
         private void startThread()
         {
-            int count = 0;
-            IPEndPoint ipe = new IPEndPoint(IPAddress.Any, 5000);
-            server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            server.Bind(ipe);
-            server.Listen(10000);
-
-            while (true)
+            try
             {
-                Socket client = server.Accept();
-                IPEndPoint ip = (IPEndPoint)client.RemoteEndPoint;
-                connectedClients.Add(client);
+                int count = 0;
+                IPEndPoint ipe = new IPEndPoint(IPAddress.Any, 5000);
+                server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                server.Bind(ipe);
+                server.Listen(10000);
 
-                //client[count] = server.Accept();
-
-                String _buf = "Welcome Myserver" + ip.Address;
-                Byte[] _data = Encoding.Default.GetBytes(_buf);
-                _buf = "";
-
-                Thread v = new Thread(() => _Receive(count, ip))
+                while (true)
                 {
-                    IsBackground = true
+                    Socket client = server.Accept();
+                    IPEndPoint ip = (IPEndPoint)client.RemoteEndPoint;
+                    
+                    connectedClients.Add(client);
 
-                };
-                v.Start();
+                    //client[count] = server.Accept();
 
-                count++;
+                    Thread v = new Thread(() => _Receive(count, ip))
+                    {
+                        IsBackground = true
+
+                    };
+                    v.Start();
+
+                    count++;
+                }
+            }
+            catch(Exception ex)
+            {
+
             }
         }
 
