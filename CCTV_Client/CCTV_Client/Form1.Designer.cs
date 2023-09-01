@@ -28,21 +28,49 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.camDisplay = new System.Windows.Forms.PictureBox();
+            this.btnOpen = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.SuspendLayout();
+            // 
+            // camDisplay
+            // 
+            this.camDisplay.Location = new System.Drawing.Point(13, 13);
+            this.camDisplay.Name = "camDisplay";
+            this.camDisplay.Size = new System.Drawing.Size(775, 568);
+            this.camDisplay.TabIndex = 0;
+            this.camDisplay.TabStop = false;
+            // 
+            // btnOpen
+            // 
+            this.btnOpen.Location = new System.Drawing.Point(13, 587);
+            this.btnOpen.Name = "btnOpen";
+            this.btnOpen.Size = new System.Drawing.Size(450, 55);
+            this.btnOpen.TabIndex = 1;
+            this.btnOpen.Text = "문열기";
+            this.btnOpen.UseVisualStyleBackColor = true;
+            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 646);
+            this.Controls.Add(this.btnOpen);
+            this.Controls.Add(this.camDisplay);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.PictureBox camDisplay;
+        private System.Windows.Forms.Button btnOpen;
     }
 }
 
