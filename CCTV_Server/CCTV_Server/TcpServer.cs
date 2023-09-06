@@ -13,7 +13,7 @@ namespace CCTV_Server
 {
     class TcpServer
     {
-        public delegate void ReceiveData(string num, string data);
+        public delegate void ReceiveData(string ID, string num, string data);
         public ReceiveData RunEvent;
 
 
@@ -95,14 +95,9 @@ namespace CCTV_Server
                         if (_buf.Trim().Length > 0)
                         {
                             string[] info = _buf.Split(',');
-                            if (info.Length != 3)
-                            {
-                                MessageBox.Show(count1.ToString() + " " + _buf);
-                            }
-                            else
-                            {
-                                RunEvent(info[0], info[1]);
-                            }
+                            
+                            RunEvent(info[0] ,info[1], info[2]);
+                            
 
                             break;
                         }

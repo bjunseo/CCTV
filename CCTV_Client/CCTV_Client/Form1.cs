@@ -52,7 +52,7 @@ namespace CCTV_Client
                     Client = new TcpClient();
                     Client.LingerState = new LingerOption(true, 1);
                     
-                    Client.Connect(IPAddress.Parse("127.0.0.3"), 5000);
+                    Client.Connect(IPAddress.Parse("127.0.0.1"), 5000);
 
                     NetworkStream = Client.GetStream();
                     StreamReader = new StreamReader(NetworkStream);
@@ -61,8 +61,8 @@ namespace CCTV_Client
                     ReceiveThread = new Thread(new ThreadStart(DataReceived));
                     ReceiveThread.Start();
 
-                    StreamWriter.Write("1");
-                    StreamWriter.Flush();
+                    //StreamWriter.Write("1");
+                    //StreamWriter.Flush();
 
                     if (Client.Connected)
                     {
@@ -185,7 +185,7 @@ namespace CCTV_Client
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            StreamWriter.Write("1");
+            StreamWriter.Write("CLIENT,OPEN,");
             StreamWriter.Flush();
 
         }

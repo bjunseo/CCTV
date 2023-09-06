@@ -118,6 +118,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBConfig.cs" />
     <Compile Include="FFmpeg.AutoGen\FFmpegBinariesHelper.cs" />
     <Compile Include="FFmpeg.AutoGen\FFmpegHelper.cs" />
     <Compile Include="FFmpeg.AutoGen\VideoFrameConverter.cs" />

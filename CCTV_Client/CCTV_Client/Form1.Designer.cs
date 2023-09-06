@@ -45,7 +45,7 @@
             // 
             this.btnOpen.Location = new System.Drawing.Point(13, 587);
             this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(450, 55);
+            this.btnOpen.Size = new System.Drawing.Size(775, 55);
             this.btnOpen.TabIndex = 1;
             this.btnOpen.Text = "문열기";
             this.btnOpen.UseVisualStyleBackColor = true;

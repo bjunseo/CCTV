@@ -35,25 +35,33 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.CCTV = new System.Windows.Forms.GroupBox();
+            this.btnCCTVsave = new System.Windows.Forms.Button();
             this.txtCCTVIip = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnUser = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.btnCCTVsave = new System.Windows.Forms.Button();
+            this.dgvUser = new System.Windows.Forms.DataGridView();
+            this.btnMasterSave = new System.Windows.Forms.Button();
+            this.txtMasterIp = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.User = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.level = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.connect = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.CCTV.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUser)).BeginInit();
             this.SuspendLayout();
             // 
             // camDisplay
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.camDisplay, 2);
             this.camDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.camDisplay.Location = new System.Drawing.Point(3, 154);
             this.camDisplay.Name = "camDisplay";
-            this.camDisplay.Size = new System.Drawing.Size(1607, 722);
+            this.camDisplay.Size = new System.Drawing.Size(1167, 722);
             this.camDisplay.TabIndex = 0;
             this.camDisplay.TabStop = false;
             // 
@@ -67,11 +75,12 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 72.72727F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.27273F));
             this.tableLayoutPanel1.Controls.Add(this.camDisplay, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.dgvUser, 1, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -83,6 +92,7 @@
             // 
             // flowLayoutPanel1
             // 
+            this.tableLayoutPanel1.SetColumnSpan(this.flowLayoutPanel1, 2);
             this.flowLayoutPanel1.Controls.Add(this.panel2);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
@@ -104,13 +114,16 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox1.Controls.Add(this.btnMasterSave);
+            this.groupBox1.Controls.Add(this.txtMasterIp);
+            this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.groupBox1.Location = new System.Drawing.Point(372, 7);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(238, 122);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
+            this.groupBox1.Text = "Master";
             // 
             // CCTV
             // 
@@ -125,6 +138,16 @@
             this.CCTV.TabIndex = 6;
             this.CCTV.TabStop = false;
             this.CCTV.Text = "CCTV";
+            // 
+            // btnCCTVsave
+            // 
+            this.btnCCTVsave.Location = new System.Drawing.Point(27, 78);
+            this.btnCCTVsave.Name = "btnCCTVsave";
+            this.btnCCTVsave.Size = new System.Drawing.Size(187, 23);
+            this.btnCCTVsave.TabIndex = 2;
+            this.btnCCTVsave.Text = "등록";
+            this.btnCCTVsave.UseVisualStyleBackColor = true;
+            this.btnCCTVsave.Click += new System.EventHandler(this.btnCCTVsave_Click);
             // 
             // txtCCTVIip
             // 
@@ -161,15 +184,62 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // btnCCTVsave
+            // dgvUser
             // 
-            this.btnCCTVsave.Location = new System.Drawing.Point(27, 78);
-            this.btnCCTVsave.Name = "btnCCTVsave";
-            this.btnCCTVsave.Size = new System.Drawing.Size(187, 23);
-            this.btnCCTVsave.TabIndex = 2;
-            this.btnCCTVsave.Text = "등록";
-            this.btnCCTVsave.UseVisualStyleBackColor = true;
-            this.btnCCTVsave.Click += new System.EventHandler(this.btnCCTVsave_Click);
+            this.dgvUser.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvUser.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.User,
+            this.level,
+            this.connect});
+            this.dgvUser.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvUser.Location = new System.Drawing.Point(1176, 154);
+            this.dgvUser.Name = "dgvUser";
+            this.dgvUser.RowTemplate.Height = 23;
+            this.dgvUser.Size = new System.Drawing.Size(434, 722);
+            this.dgvUser.TabIndex = 3;
+            // 
+            // btnMasterSave
+            // 
+            this.btnMasterSave.Location = new System.Drawing.Point(27, 78);
+            this.btnMasterSave.Name = "btnMasterSave";
+            this.btnMasterSave.Size = new System.Drawing.Size(187, 23);
+            this.btnMasterSave.TabIndex = 5;
+            this.btnMasterSave.Text = "등록";
+            this.btnMasterSave.UseVisualStyleBackColor = true;
+            // 
+            // txtMasterIp
+            // 
+            this.txtMasterIp.Location = new System.Drawing.Point(64, 34);
+            this.txtMasterIp.Name = "txtMasterIp";
+            this.txtMasterIp.Size = new System.Drawing.Size(150, 21);
+            this.txtMasterIp.TabIndex = 4;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(25, 37);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(33, 12);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "IP : ";
+            // 
+            // User
+            // 
+            this.User.DataPropertyName = "user";
+            this.User.HeaderText = "사용자";
+            this.User.Name = "User";
+            // 
+            // level
+            // 
+            this.level.DataPropertyName = "level";
+            this.level.HeaderText = "권한";
+            this.level.Name = "level";
+            // 
+            // connect
+            // 
+            this.connect.FillWeight = 50F;
+            this.connect.HeaderText = "사용중";
+            this.connect.Name = "connect";
             // 
             // Form1
             // 
@@ -185,8 +255,11 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.CCTV.ResumeLayout(false);
             this.CCTV.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUser)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -206,6 +279,13 @@
         private System.Windows.Forms.TextBox txtCCTVIip;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnCCTVsave;
+        private System.Windows.Forms.DataGridView dgvUser;
+        private System.Windows.Forms.Button btnMasterSave;
+        private System.Windows.Forms.TextBox txtMasterIp;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn User;
+        private System.Windows.Forms.DataGridViewTextBoxColumn level;
+        private System.Windows.Forms.DataGridViewTextBoxColumn connect;
     }
 }
 
