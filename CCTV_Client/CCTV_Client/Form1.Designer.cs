@@ -35,9 +35,9 @@
             // 
             // camDisplay
             // 
-            this.camDisplay.Location = new System.Drawing.Point(13, 13);
+            this.camDisplay.Location = new System.Drawing.Point(13, 42);
             this.camDisplay.Name = "camDisplay";
-            this.camDisplay.Size = new System.Drawing.Size(775, 568);
+            this.camDisplay.Size = new System.Drawing.Size(775, 539);
             this.camDisplay.TabIndex = 0;
             this.camDisplay.TabStop = false;
             // 

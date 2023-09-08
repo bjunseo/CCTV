@@ -41,6 +41,8 @@ namespace CCTV_Client
         string httpAddr = "http://admin:dmenc001!@192.168.0.250:80/ISAPI/Streaming/channels/102/httpPreview";
         string url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
 
+        private SocketManager socket = new SocketManager("", "127.0.0.1", 5000);
+
         #endregion
 
         public void Connect()
@@ -49,40 +51,28 @@ namespace CCTV_Client
             {
                 if (IsConnected == false)
                 {
-                    Client = new TcpClient();
-                    Client.LingerState = new LingerOption(true, 1);
-                    
-                    Client.Connect(IPAddress.Parse("127.0.0.1"), 5000);
+                        socket.SendData_("CLIENT,CONNECT,1");
 
-                    NetworkStream = Client.GetStream();
-                    StreamReader = new StreamReader(NetworkStream);
-                    StreamWriter = new StreamWriter(NetworkStream, System.Text.Encoding.Default);
-
-                    ReceiveThread = new Thread(new ThreadStart(DataReceived));
-                    ReceiveThread.Start();
-
-                    //StreamWriter.Write("1");
-                    //StreamWriter.Flush();
-
-                    if (Client.Connected)
-                    {
-                        MessageBox.Show("소켓 연결을 성공했습니다!!\r\n");
-                    }
-                    IsConnected = true;
+                        Console.WriteLine("소켓 연결을 성공했습니다!!\r\n");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("소켓 연결을 실패했습니다.\r\n" + ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine("소켓 연결을 실패했습니다.\r\n" + ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
         }
         public void Close()
         {
-            if (server != null)
+            try
             {
-                server.Close();
-                server.Dispose();
+                socket.SendData_("");
+
+
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
             }
         }
         public class AsyncObject
@@ -111,7 +101,7 @@ namespace CCTV_Client
         //        obj.WorkingSocket = server;
         //        server.BeginReceive(obj.Buffer, 0, obj.BufferSize, 0, DataReceived, obj);
 
-        //        MessageBox.Show("붙음");
+        //        Console.WriteLine("붙음");
 
         //        Send(Encoding.UTF8.GetBytes("123"));
         //    }
@@ -138,7 +128,7 @@ namespace CCTV_Client
                                 packet += (char)rcvPacket[i];
                             }
 
-                            MessageBox.Show(packet);
+                            Console.WriteLine(packet);
 
                             break;
                         }
@@ -153,10 +143,6 @@ namespace CCTV_Client
                     }
                 }
             }
-        }
-        public void Send(byte[] msg)
-        {
-            server.Send(msg);
         }
 
         public Form1()
@@ -177,16 +163,24 @@ namespace CCTV_Client
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //server.Send(Encoding.UTF8.GetBytes("Close"));
-            Close();
+            try
+            {
+                Close();
+                frameDecodeThread.Abort();
 
-            frameDecodeThread.Abort();
+                Application.ExitThread();
+                Environment.Exit(0);
+
+            }
+            catch (Exception ex)
+            {
+                
+            }
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            StreamWriter.Write("CLIENT,OPEN,");
-            StreamWriter.Flush();
+            socket.SendData_("CLIENT,OPEN,1");
 
         }
 

@@ -25,11 +25,11 @@ namespace CCTV_Server
         #region 변수들
         string connectString = string.Format("Server={0};Database={1};Uid ={2};Pwd={3};", DBConfig.Address, DBConfig.Database, DBConfig.Uid, DBConfig.Password1);
 
-        Socket server;
-
         TcpClient tcpClient;
 
         TcpServer tcpServer;
+
+        TcpClient Master;
 
         Thread frameDecodeThread;
 
@@ -52,16 +52,15 @@ namespace CCTV_Server
         {
             try
             {
-                tcpServer = new TcpServer();
-
-                tcpServer.RunEvent = RunEvent;
+                tcpServer = new TcpServer(5000);
+                tcpServer.RunEvent += RunEvent;
+                tcpServer.StartServer();
                 
-
-                MessageBox.Show("Socket Open Success!!");
+                Console.WriteLine("Socket Open Success!!");
             }
             catch (Exception e)
             {
-                MessageBox.Show("Socket Open Fail ㅠㅠ");
+                Console.WriteLine("Socket Open Fail ㅠㅠ");
             }
         }
 
@@ -89,7 +88,9 @@ namespace CCTV_Server
             }
 
             setView();
-            Start();
+            
+
+            connectMaster();
 
             rtspAddr = $"rtsp://admin:dmenc001!@{cctvIP}:554/ISAPI/streaming/channels/101";
             httpAddr = $"http://admin:dmenc001!@{cctvIP}:80/ISAPI/Streaming/channels/102/httpPreview";
@@ -101,6 +102,7 @@ namespace CCTV_Server
 
             frameDecodeThread.Start();
 
+            Start();
 
             dgvUser.AutoGenerateColumns = false;
 
@@ -119,6 +121,12 @@ namespace CCTV_Server
 
             masterIP = reg.GetValue("MASTERIP", "값이 없습니다").ToString();
             txtMasterIp.Text = masterIP;
+        }
+
+        public void connectMaster()
+        {
+            
+
         }
 
         #endregion
@@ -204,19 +212,70 @@ namespace CCTV_Server
         #endregion
 
         #region socket run event
-        private void RunEvent(string ID, string num, string data)
+        private void RunEvent(string type, string data)
         {
-            if (ID == "CLIENT")
+            try
             {
-                
-            }
-            else if (ID == "DOOR")
-            {
+                switch (type)
+                {
+                    case "RCV":
+                        {
+                            string[] datas = data.Split(',');
 
+                            if (datas[1] == "CONNECT")
+                            {
+                                foreach(DataGridViewRow row in dgvUser.Rows)
+                                {
+                                    int i = dgvUser.Rows.IndexOf(row);
+
+                                    if(row.Cells["ID"].Value != null)
+                                    {
+                                        if (row.Cells["ID"].Value.ToString().Trim() == datas[2].Trim())
+                                        {
+                                            dgvUser.Rows[i].DefaultCellStyle.BackColor = Color.LightYellow;
+                                            dgvUser.Rows[i].Cells["connect"].Value = "연결중";
+                                        }
+                                    }
+                                }
+
+                                Console.WriteLine(datas[0] + "connect userID : " + datas[2]);
+                            }
+
+                            if (datas[1].Trim() == "CLOSE")
+                            {
+                                foreach (DataGridViewRow row in dgvUser.Rows)
+                                {
+                                    int i = dgvUser.Rows.IndexOf(row);
+                                    
+                                    string name = dgvUser.Rows[i].Cells["user"].Value.ToString();
+
+                                    if (row.Cells["ID"].Value != null)
+                                    {
+                                        if (row.Cells["ID"].Value.ToString() != datas[2])
+                                        {
+                                            TcpServer.socketInfo clientInfo = tcpServer.clientInfo.Find(x => x.ID.Trim() == datas[2].Trim());
+                                            if (clientInfo != null)
+                                            {
+                                                
+
+                                                dgvUser.Rows[i].DefaultCellStyle.BackColor = Color.White;
+                                                dgvUser.Rows[i].Cells["connect"].Value = "";
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                    default: { break; }
+
+                }
             }
-            else if (ID == "MRUN")
+            catch (Exception ex)
             {
-                
+                Console.WriteLine(ex.Message);
             }
         }
         #endregion
@@ -224,7 +283,7 @@ namespace CCTV_Server
 
         private void button1_Click(object sender, EventArgs e)
         {
-            tcpServer.sendData();
+            //tcpServer.sendData();
         }
 
         #region CCTV,Master IP 저장 버튼 이벤트
@@ -392,8 +451,104 @@ namespace CCTV_Server
             
             DataTable dt = ds.Tables[0];
             dgvUser.DataSource = dt;
-
         }
+
+        private void dgvUser_KeyDown(object sender, KeyEventArgs e)
+        {
+            
+        }
+
         #endregion
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            string sql1 = "insert into UserMng ([user], [level], [ID]) values ('',0,'')";
+
+            string sql = "select * from UserMng";
+
+            DataSet ds = new DataSet();
+
+            using (SqlConnection conn = new SqlConnection(connectString))
+            {
+                conn.Open();
+
+                SqlCommand cmd = new SqlCommand(sql1, conn);
+                cmd.ExecuteNonQuery();
+
+                SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+                da.Fill(ds);
+
+            }
+
+            DataTable dt = ds.Tables[0];
+            dgvUser.DataSource = dt;
+        }
+
+        private void timer_connect_Tick(object sender, EventArgs e)
+        {
+            foreach(Socket socket in tcpServer.connectedClients)
+            {
+                if(!socket.Connected)
+                {
+                    tcpServer.connectedClients.Remove(socket);
+                }
+                
+
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            string id = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["ID"].Value.ToString(); 
+
+            string sql1 = $"Delete from UserMng where ID = {id}";
+
+            string sql = "select * from UserMng";
+
+            DataSet ds = new DataSet();
+
+            using (SqlConnection conn = new SqlConnection(connectString))
+            {
+                conn.Open();
+
+                SqlCommand cmd = new SqlCommand(sql1, conn);
+                cmd.ExecuteNonQuery();
+
+                SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+                da.Fill(ds);
+
+            }
+
+            DataTable dt = ds.Tables[0];
+            dgvUser.DataSource = dt;
+        }
+
+        private void dgvUser_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            string id = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["ID"].Value.ToString();
+            string user = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["User"].Value.ToString();
+            string level = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["level"].Value.ToString();
+
+            string sql1 = $"UPDATE UserMng SET(user = {user}, level = {level}) where ID = {id}";
+
+            string sql = "select * from UserMng";
+
+            DataSet ds = new DataSet();
+
+            using (SqlConnection conn = new SqlConnection(connectString))
+            {
+                conn.Open();
+
+                SqlCommand cmd = new SqlCommand(sql1, conn);
+                cmd.ExecuteNonQuery();
+
+                SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+                da.Fill(ds);
+
+            }
+
+            DataTable dt = ds.Tables[0];
+            dgvUser.DataSource = dt;
+        }
     }
 }

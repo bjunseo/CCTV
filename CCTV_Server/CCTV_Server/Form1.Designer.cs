@@ -28,31 +28,41 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.camDisplay = new System.Windows.Forms.PictureBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnMasterSave = new System.Windows.Forms.Button();
+            this.txtMasterIp = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.CCTV = new System.Windows.Forms.GroupBox();
             this.btnCCTVsave = new System.Windows.Forms.Button();
             this.txtCCTVIip = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnUser = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
             this.dgvUser = new System.Windows.Forms.DataGridView();
-            this.btnMasterSave = new System.Windows.Forms.Button();
-            this.txtMasterIp = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.User = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.level = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.connect = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timer_connect = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.CCTV.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUser)).BeginInit();
             this.SuspendLayout();
             // 
@@ -78,9 +88,9 @@
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 72.72727F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.27273F));
-            this.tableLayoutPanel1.Controls.Add(this.camDisplay, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dgvUser, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.camDisplay, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.splitContainer1, 1, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -124,6 +134,32 @@
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Master";
+            // 
+            // btnMasterSave
+            // 
+            this.btnMasterSave.Location = new System.Drawing.Point(27, 78);
+            this.btnMasterSave.Name = "btnMasterSave";
+            this.btnMasterSave.Size = new System.Drawing.Size(187, 23);
+            this.btnMasterSave.TabIndex = 5;
+            this.btnMasterSave.Text = "등록";
+            this.btnMasterSave.UseVisualStyleBackColor = true;
+            this.btnMasterSave.Click += new System.EventHandler(this.btnMasterSave_Click);
+            // 
+            // txtMasterIp
+            // 
+            this.txtMasterIp.Location = new System.Drawing.Point(64, 34);
+            this.txtMasterIp.Name = "txtMasterIp";
+            this.txtMasterIp.Size = new System.Drawing.Size(150, 21);
+            this.txtMasterIp.TabIndex = 4;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(25, 37);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(33, 12);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "IP : ";
             // 
             // CCTV
             // 
@@ -184,44 +220,64 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(1176, 154);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.splitContainer1.Panel1.Controls.Add(this.btnDelete);
+            this.splitContainer1.Panel1.Controls.Add(this.btnAdd);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.dgvUser);
+            this.splitContainer1.Size = new System.Drawing.Size(434, 722);
+            this.splitContainer1.SplitterDistance = 32;
+            this.splitContainer1.TabIndex = 3;
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(84, 3);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(75, 23);
+            this.btnDelete.TabIndex = 1;
+            this.btnDelete.Text = "삭제";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(3, 3);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnAdd.TabIndex = 0;
+            this.btnAdd.Text = "추가";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
             // dgvUser
             // 
+            this.dgvUser.AllowUserToAddRows = false;
             this.dgvUser.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvUser.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.User,
             this.level,
-            this.connect});
+            this.connect,
+            this.ID});
             this.dgvUser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvUser.Location = new System.Drawing.Point(1176, 154);
+            this.dgvUser.Location = new System.Drawing.Point(0, 0);
             this.dgvUser.Name = "dgvUser";
+            this.dgvUser.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.dgvUser.RowTemplate.Height = 23;
-            this.dgvUser.Size = new System.Drawing.Size(434, 722);
+            this.dgvUser.Size = new System.Drawing.Size(434, 686);
             this.dgvUser.TabIndex = 3;
-            // 
-            // btnMasterSave
-            // 
-            this.btnMasterSave.Location = new System.Drawing.Point(27, 78);
-            this.btnMasterSave.Name = "btnMasterSave";
-            this.btnMasterSave.Size = new System.Drawing.Size(187, 23);
-            this.btnMasterSave.TabIndex = 5;
-            this.btnMasterSave.Text = "등록";
-            this.btnMasterSave.UseVisualStyleBackColor = true;
-            // 
-            // txtMasterIp
-            // 
-            this.txtMasterIp.Location = new System.Drawing.Point(64, 34);
-            this.txtMasterIp.Name = "txtMasterIp";
-            this.txtMasterIp.Size = new System.Drawing.Size(150, 21);
-            this.txtMasterIp.TabIndex = 4;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(25, 37);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(33, 12);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "IP : ";
+            this.dgvUser.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvUser_CellValueChanged);
+            this.dgvUser.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvUser_KeyDown);
             // 
             // User
             // 
@@ -241,6 +297,18 @@
             this.connect.HeaderText = "사용중";
             this.connect.Name = "connect";
             // 
+            // ID
+            // 
+            this.ID.DataPropertyName = "ID";
+            this.ID.HeaderText = "ID";
+            this.ID.Name = "ID";
+            this.ID.Visible = false;
+            // 
+            // timer_connect
+            // 
+            this.timer_connect.Interval = 5000;
+            this.timer_connect.Tick += new System.EventHandler(this.timer_connect_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -259,6 +327,10 @@
             this.groupBox1.PerformLayout();
             this.CCTV.ResumeLayout(false);
             this.CCTV.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvUser)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -283,9 +355,14 @@
         private System.Windows.Forms.Button btnMasterSave;
         private System.Windows.Forms.TextBox txtMasterIp;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.DataGridViewTextBoxColumn User;
         private System.Windows.Forms.DataGridViewTextBoxColumn level;
         private System.Windows.Forms.DataGridViewTextBoxColumn connect;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ID;
+        private System.Windows.Forms.Timer timer_connect;
     }
 }
 

@@ -8,112 +8,296 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Collections;
 
 namespace CCTV_Server
 {
     class TcpServer
     {
-        public delegate void ReceiveData(string ID, string num, string data);
+        public delegate void ReceiveData(string type, string data);
         public ReceiveData RunEvent;
 
 
         private Thread thread = null;
 
 
-
         #region 변수
+
+        public class socketInfo
+        {
+            public Socket socket;
+            public string ID;
+
+            public socketInfo(Socket socket, string iD)
+            {
+                this.socket = socket;
+                ID = iD;
+            }
+        }
+
         Socket server;
 
-        List<Socket> connectedClients = new List<Socket>();
+        public List<Socket> connectedClients = new List<Socket>();
+        public List<socketInfo> clientInfo = new List<socketInfo>();
 
-        int m_port = 5000;
+        private int Port;
+        private ArrayList SocketClients;
+
 
         private Thread ReceiveThread;
         private NetworkStream NetworkStream;
         private StreamReader StreamReader;
         private StreamWriter StreamWriter;
+
+        System.Net.Sockets.Socket tcpServer;
         #endregion
 
-        public TcpServer() 
+        public TcpServer(int port) 
         {
-            thread = new Thread(startThread);
-            thread.IsBackground = true;
-            thread.Start();
+            this.Port = port;
+            this.SocketClients = new ArrayList();
         }
 
-        private void startThread()
+
+        #region StartServer
+        public void StartServer()
         {
             try
             {
-                int count = 0;
-                IPEndPoint ipe = new IPEndPoint(IPAddress.Any, 5000);
-                server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                server.Bind(ipe);
-                server.Listen(10000);
-
-                while (true)
+                if (Port == 0)
                 {
-                    Socket client = server.Accept();
-                    IPEndPoint ip = (IPEndPoint)client.RemoteEndPoint;
-                    
-                    connectedClients.Add(client);
-
-                    //client[count] = server.Accept();
-
-                    Thread v = new Thread(() => _Receive(count, ip))
-                    {
-                        IsBackground = true
-
-                    };
-                    v.Start();
-
-                    count++;
+                    return;
                 }
-            }
-            catch(Exception ex)
-            {
 
+                // Open Tcp Socket Server!
+                IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 5000);
+                tcpServer = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                tcpServer.Bind(endPoint);
+                tcpServer.Listen(50);
+
+                SocketAsyncEventArgs socketArgs = new SocketAsyncEventArgs();
+                socketArgs.Completed += new EventHandler<SocketAsyncEventArgs>(Accept_Completed);
+
+                // 소켓 연결 대기
+                tcpServer.AcceptAsync(socketArgs);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
             }
         }
+        #endregion
 
-        private void _Receive(int count1, IPEndPoint ip)
+        #region Accept_Completed
+        private void Accept_Completed(object sender, SocketAsyncEventArgs e)
         {
-            string _buf = "";
-            byte[] _data;
-             
-            while (true)
+            try
             {
-                while (true)
+                System.Net.Sockets.Socket clientSocket = e.AcceptSocket;
+                IPEndPoint clientEndPoint = (IPEndPoint)clientSocket.RemoteEndPoint;
+
+                Console.WriteLine("client: [" + clientEndPoint.Address.ToString() + "] connected");
+
+                if (clientSocket.Connected)
                 {
-                    try
+                    // 비인가 IP에서 서버 접속시 소켓 연결 종료
+                    string clientIP = clientEndPoint.Address.ToString();
+                    if (!clientIP.StartsWith("192.168.10") && !clientIP.Equals("127.0.0.1"))
                     {
-                        _data = new Byte[1024];
-                        int bytesRec = ((Socket)connectedClients[(int)count1 - 1]).Receive(_data);
-                        _buf += Encoding.UTF8.GetString(_data, 0, bytesRec);
-                        Thread.Sleep(1000);
+                        //CallEvent("UNKNOWN", clientIP);
+                        clientSocket.Close();
+                        return;
+                    }
 
-                        if (_buf.Trim().Length > 0)
+                    // 중복 소켓 접속 시 기존 접속 클라이언트는 종료
+                    foreach (TcpClient socketClient in SocketClients)
+                    {
+                        if (clientIP == socketClient.ClientIP)
                         {
-                            string[] info = _buf.Split(',');
-                            
-                            RunEvent(info[0] ,info[1], info[2]);
-                            
-
+                            //CallEvent("DELETE", clientIP);
+                            socketClient.Close();
+                            SocketClients.Remove(socketClient);
                             break;
                         }
                     }
-                    catch (SocketException ex)
+
+                    TcpClient client = new TcpClient(clientSocket);
+                    // 소켓 클라이언트 이벤트 추가
+                    client.clientEvent += Client_EventProcess;
+
+                    // 클라이언트 접속성공 처리
+                    SocketClients.Add(client);
+                    //CallEvent("ACCEPT", clientIP);
+                }
+
+                // 소켓 연결 대기
+                e.AcceptSocket = null;
+                tcpServer.AcceptAsync(e);
+            }
+            catch (Exception exception)
+            {
+                //CallError(exception.Message);
+            }
+        }
+        #endregion
+
+        #region Client_EventProcess
+        private void Client_EventProcess(string type, string message)
+        {
+            try
+            {
+                
+                    RunEvent(type, message);
+
+            }
+            catch (Exception exception)
+            {
+                //CallError("[" + MethodUtil.GetCalledMethodName() + "] " + exception.Message);
+            }
+        }
+        #endregion
+
+       
+
+        private void _Receive(Socket client)
+        {
+            
+        }
+
+        #region SendData
+        public void SendData(string clientIP, string data)
+        {
+            try
+            {
+                // string 데이터에 BCC, STX, ETX 추가하여 전송
+                if (Encoding.UTF8.GetBytes(data).First() != 0x02)
+                {
+                    SendData(clientIP, GetClientPacket(data));
+                }
+                else
+                {
+                    SendData(clientIP, Encoding.UTF8.GetBytes(data));
+                }
+            }
+            catch (Exception exception)
+            {
+                //CallError("[" + MethodUtil.GetCalledMethodName() + "] " + exception.Message);
+            }
+        }
+        public void SendData(string clientIP, byte[] data)
+        {
+            try
+            {
+                TcpClient targetClient = null;
+
+                foreach (TcpClient socketClient in SocketClients)
+                {
+                    if (socketClient.Connected && socketClient.ClientIP.Equals(clientIP))
                     {
+                        targetClient = socketClient;
                     }
                 }
 
-                _buf = "";
+                if (targetClient != null)
+                {
+                    targetClient.SendData(data);
+                    // 미루컨버터에 짧은 시간내 여러 패킷보내면 일부패킷응답이 안오는경우 있음.
+                    Thread.Sleep(800);
+                }
+            }
+            catch (Exception exception)
+            {
+                //CallError("[" + MethodUtil.GetCalledMethodName() + "] " + exception.Message);
+            }
+        }
+        #endregion
+
+        #region GetClientPacket 마스터에 보낼 패킷형태로 변환
+        private static byte[] GetClientPacket(string raw)
+        {
+            try
+            {
+                byte[] clientPacket = StringToByte(raw);
+                byte[] checkSum = GetChecksum(StringToByte(raw));
+                // stx
+                clientPacket = AddByteToArray(clientPacket, 0x02, true);
+                // bcc
+                clientPacket = AddBytesToArray(clientPacket, checkSum, false);
+                // etx
+                clientPacket = AddByteToArray(clientPacket, 0x03, false);
+
+                return clientPacket;
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
-        public void sendData()
+        private static byte[] GetChecksum(byte[] raw)
         {
-            connectedClients[0].Send(System.Text.Encoding.UTF8.GetBytes("8"));
+            int Sum = 0;
+            try
+            {
+                foreach (byte b in raw)
+                {
+                    Sum += b;
+                }
+
+                string sCheckSum = Sum.ToString("X04");
+                byte[] bytes = StringToByte(sCheckSum);
+                return bytes.Skip(2).Take(2).ToArray();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
+
+        private static byte[] StringToByte(string str)
+        {
+            byte[] StrByte = Encoding.UTF8.GetBytes(str);
+            return StrByte;
+        }
+
+        private static byte[] AddByteToArray(byte[] bArray, byte newByte, bool insertFirst)
+        {
+            byte[] newArray = new byte[bArray.Length + 1];
+            if (insertFirst)
+            {
+                bArray.CopyTo(newArray, 1);
+                newArray[0] = newByte;
+            }
+            else
+            {
+                bArray.CopyTo(newArray, 0);
+                newArray[newArray.Length - 1] = newByte;
+            }
+            return newArray;
+        }
+
+        private static byte[] AddBytesToArray(byte[] bArray, byte[] newBytes, bool insertFirst)
+        {
+            byte[] newArray = new byte[bArray.Length + newBytes.Length];
+            if (insertFirst)
+            {
+                bArray.CopyTo(newArray, newBytes.Length);
+                for (int i = 0; i < newBytes.Length; i++)
+                {
+                    newArray[i] = newBytes[i];
+                }
+            }
+            else
+            {
+                bArray.CopyTo(newArray, 0);
+                for (int i = newBytes.Length; i > 0; i--)
+                {
+                    newArray[newArray.Length - i] = newBytes[newBytes.Length - i];
+                }
+            }
+            return newArray;
+        }
+        #endregion
+
     }
 }
