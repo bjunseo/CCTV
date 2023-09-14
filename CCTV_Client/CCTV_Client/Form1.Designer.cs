@@ -30,20 +30,26 @@
         {
             this.camDisplay = new System.Windows.Forms.PictureBox();
             this.btnOpen = new System.Windows.Forms.Button();
+            this.UserID = new System.Windows.Forms.Label();
+            this.txtUserID = new System.Windows.Forms.TextBox();
+            this.txtServerIP = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnIDsave = new System.Windows.Forms.Button();
+            this.btnIPsave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.SuspendLayout();
             // 
             // camDisplay
             // 
-            this.camDisplay.Location = new System.Drawing.Point(13, 42);
+            this.camDisplay.Location = new System.Drawing.Point(13, 46);
             this.camDisplay.Name = "camDisplay";
-            this.camDisplay.Size = new System.Drawing.Size(775, 539);
+            this.camDisplay.Size = new System.Drawing.Size(775, 575);
             this.camDisplay.TabIndex = 0;
             this.camDisplay.TabStop = false;
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(13, 587);
+            this.btnOpen.Location = new System.Drawing.Point(12, 627);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(775, 55);
             this.btnOpen.TabIndex = 1;
@@ -51,11 +57,72 @@
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
+            // UserID
+            // 
+            this.UserID.AutoSize = true;
+            this.UserID.Location = new System.Drawing.Point(12, 17);
+            this.UserID.Name = "UserID";
+            this.UserID.Size = new System.Drawing.Size(50, 12);
+            this.UserID.TabIndex = 2;
+            this.UserID.Text = "UserID :";
+            // 
+            // txtUserID
+            // 
+            this.txtUserID.Location = new System.Drawing.Point(68, 12);
+            this.txtUserID.Name = "txtUserID";
+            this.txtUserID.ReadOnly = true;
+            this.txtUserID.Size = new System.Drawing.Size(137, 21);
+            this.txtUserID.TabIndex = 3;
+            // 
+            // txtServerIP
+            // 
+            this.txtServerIP.Location = new System.Drawing.Point(386, 12);
+            this.txtServerIP.Name = "txtServerIP";
+            this.txtServerIP.Size = new System.Drawing.Size(137, 21);
+            this.txtServerIP.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(320, 17);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(60, 12);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "ServerIP :";
+            // 
+            // btnIDsave
+            // 
+            this.btnIDsave.Location = new System.Drawing.Point(211, 13);
+            this.btnIDsave.Margin = new System.Windows.Forms.Padding(0);
+            this.btnIDsave.Name = "btnIDsave";
+            this.btnIDsave.Size = new System.Drawing.Size(75, 21);
+            this.btnIDsave.TabIndex = 6;
+            this.btnIDsave.Text = "ID저장";
+            this.btnIDsave.UseVisualStyleBackColor = true;
+            this.btnIDsave.Click += new System.EventHandler(this.btnIDsave_Click);
+            // 
+            // btnIPsave
+            // 
+            this.btnIPsave.Location = new System.Drawing.Point(529, 13);
+            this.btnIPsave.Margin = new System.Windows.Forms.Padding(0);
+            this.btnIPsave.Name = "btnIPsave";
+            this.btnIPsave.Size = new System.Drawing.Size(75, 21);
+            this.btnIPsave.TabIndex = 7;
+            this.btnIPsave.Text = "IP저장";
+            this.btnIPsave.UseVisualStyleBackColor = true;
+            this.btnIPsave.Click += new System.EventHandler(this.btnIPsave_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 646);
+            this.ClientSize = new System.Drawing.Size(800, 694);
+            this.Controls.Add(this.btnIPsave);
+            this.Controls.Add(this.btnIDsave);
+            this.Controls.Add(this.txtServerIP);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtUserID);
+            this.Controls.Add(this.UserID);
             this.Controls.Add(this.btnOpen);
             this.Controls.Add(this.camDisplay);
             this.Name = "Form1";
@@ -64,6 +131,7 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -71,6 +139,12 @@
 
         private System.Windows.Forms.PictureBox camDisplay;
         private System.Windows.Forms.Button btnOpen;
+        private System.Windows.Forms.Label UserID;
+        private System.Windows.Forms.TextBox txtUserID;
+        private System.Windows.Forms.TextBox txtServerIP;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnIDsave;
+        private System.Windows.Forms.Button btnIPsave;
     }
 }
 

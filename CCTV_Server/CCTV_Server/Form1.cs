@@ -43,7 +43,7 @@ namespace CCTV_Server
         string httpAddr;
         string url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
 
-        
+        bool init = false;
 
         #endregion
 
@@ -57,10 +57,12 @@ namespace CCTV_Server
                 tcpServer.StartServer();
                 
                 Console.WriteLine("Socket Open Success!!");
+                txtLog.Text += "★★★Socket Open Success!!★★★\r\n";
             }
             catch (Exception e)
             {
                 Console.WriteLine("Socket Open Fail ㅠㅠ");
+                txtLog.Text += "Socket Open Fail ㅠㅠ\r\n";
             }
         }
 
@@ -81,6 +83,7 @@ namespace CCTV_Server
             if(ConnectionTest())
             {
                 Console.WriteLine("DB connet!!");
+                txtLog.Text += "★★★★★★DB connet!!★★★★★★\r\n";
             }
             else
             {
@@ -107,6 +110,10 @@ namespace CCTV_Server
             dgvUser.AutoGenerateColumns = false;
 
             selectUserInfo();
+
+
+
+            init = true;
         }
         #endregion
 
@@ -224,21 +231,43 @@ namespace CCTV_Server
 
                             if (datas[1] == "CONNECT")
                             {
-                                foreach(DataGridViewRow row in dgvUser.Rows)
+                                string name = ""; 
+
+                                Console.WriteLine(datas[0] + " connect userID : " + datas[2]);
+                                
+                                foreach (DataGridViewRow row in dgvUser.Rows)
                                 {
                                     int i = dgvUser.Rows.IndexOf(row);
 
-                                    if(row.Cells["ID"].Value != null)
+                                    if (row.Cells["ID"].Value != null)
                                     {
                                         if (row.Cells["ID"].Value.ToString().Trim() == datas[2].Trim())
                                         {
                                             dgvUser.Rows[i].DefaultCellStyle.BackColor = Color.LightYellow;
-                                            dgvUser.Rows[i].Cells["connect"].Value = "연결중";
+
+                                            //if (this.dgvUser.InvokeRequired)
+                                            //{
+                                            //    this.Invoke(new MethodInvoker(delegate ()
+                                            //    {
+                                            //        dgvUser.Rows[i].Cells["connect"].Value = "연결중";
+                                            //    }));
+                                            //}
                                         }
                                     }
                                 }
-
-                                Console.WriteLine(datas[0] + "connect userID : " + datas[2]);
+                                
+                                if (this.txtLog.InvokeRequired)
+                                {
+                                    this.Invoke(new MethodInvoker(delegate ()
+                                    {
+                                        txtLog.Text += "connect userID : " + datas[2] + "\r\n";
+                                    }));
+                                }
+                                else
+                                {
+                                    this.txtLog.Text += "connect userID : " + datas[2] + "\r\n";
+                                }
+                                
                             }
 
                             if (datas[1].Trim() == "CLOSE")
@@ -251,20 +280,34 @@ namespace CCTV_Server
 
                                     if (row.Cells["ID"].Value != null)
                                     {
-                                        if (row.Cells["ID"].Value.ToString() != datas[2])
+                                        if (row.Cells["ID"].Value.ToString().Trim() == datas[2].Trim())
                                         {
                                             TcpServer.socketInfo clientInfo = tcpServer.clientInfo.Find(x => x.ID.Trim() == datas[2].Trim());
-                                            if (clientInfo != null)
-                                            {
-                                                
-
-                                                dgvUser.Rows[i].DefaultCellStyle.BackColor = Color.White;
-                                                dgvUser.Rows[i].Cells["connect"].Value = "";
-                                            }
-
+                                            dgvUser.Rows[i].DefaultCellStyle.BackColor = Color.White;
                                         }
                                     }
                                 }
+
+                                if (this.txtLog.InvokeRequired)
+                                {
+                                    this.Invoke(new MethodInvoker(delegate ()
+                                    {
+                                        txtLog.Text += "Close userID : " + datas[2] + "\r\n";
+                                    }));
+                                }
+                                else
+                                {
+                                    this.txtLog.Text += datas[0] + "Close userID : " + datas[2] + "\r\n";
+                                }
+                            }
+
+                            if (datas[1] == "OPEN")
+                            {
+                                this.Invoke(new MethodInvoker(delegate ()
+                                {
+                                    Console.WriteLine("Open userID : " + datas[2]);
+                                    txtLog.Text += "Open userID : " + datas[2] + "\r\n";
+                                }));
                             }
 
                             break;
@@ -492,8 +535,6 @@ namespace CCTV_Server
                 {
                     tcpServer.connectedClients.Remove(socket);
                 }
-                
-
             }
         }
 
@@ -516,7 +557,6 @@ namespace CCTV_Server
 
                 SqlDataAdapter da = new SqlDataAdapter(sql, conn);
                 da.Fill(ds);
-
             }
 
             DataTable dt = ds.Tables[0];
@@ -525,30 +565,33 @@ namespace CCTV_Server
 
         private void dgvUser_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            string id = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["ID"].Value.ToString();
-            string user = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["User"].Value.ToString();
-            string level = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["level"].Value.ToString();
-
-            string sql1 = $"UPDATE UserMng SET(user = {user}, level = {level}) where ID = {id}";
-
-            string sql = "select * from UserMng";
-
-            DataSet ds = new DataSet();
-
-            using (SqlConnection conn = new SqlConnection(connectString))
+            if(init)
             {
-                conn.Open();
+                string id = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["ID"].Value.ToString();
+                string user = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["User"].Value.ToString();
+                string level = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["level"].Value.ToString();
 
-                SqlCommand cmd = new SqlCommand(sql1, conn);
-                cmd.ExecuteNonQuery();
+                string sql1 = $"UPDATE UserMng SET [user] = '{user}', [level] = {level} where ID = '{id}'";
 
-                SqlDataAdapter da = new SqlDataAdapter(sql, conn);
-                da.Fill(ds);
+                string sql = "select * from UserMng";
 
+                DataSet ds = new DataSet();
+
+                using (SqlConnection conn = new SqlConnection(connectString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand(sql1, conn);
+                    cmd.ExecuteNonQuery();
+
+                    SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+                    da.Fill(ds);
+
+                }
+
+                DataTable dt = ds.Tables[0];
+                dgvUser.DataSource = dt;
             }
-
-            DataTable dt = ds.Tables[0];
-            dgvUser.DataSource = dt;
         }
     }
 }

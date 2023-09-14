@@ -15,6 +15,7 @@ using CCTV_Server;
 using OpenCvSharp;
 using System.Drawing.Imaging;
 using System.Web.UI.WebControls;
+using Microsoft.Win32;
 
 namespace CCTV_Client
 {
@@ -41,17 +42,22 @@ namespace CCTV_Client
         string httpAddr = "http://admin:dmenc001!@192.168.0.250:80/ISAPI/Streaming/channels/102/httpPreview";
         string url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
 
-        private SocketManager socket = new SocketManager("", "127.0.0.1", 5000);
+        private SocketManager socket; 
 
+
+        string serverIP;
+        string userID;
         #endregion
 
         public void Connect()
         {
             try
             {
+                socket = new SocketManager("", serverIP, 5000);
+
                 if (IsConnected == false)
                 {
-                        socket.SendData_("CLIENT,CONNECT,1");
+                        socket.SendData_("CLIENT,CONNECT," + userID);
 
                         Console.WriteLine("소켓 연결을 성공했습니다!!\r\n");
                 }
@@ -66,7 +72,7 @@ namespace CCTV_Client
         {
             try
             {
-                socket.SendData_("");
+                socket.SendData_("CLIENT,CLOSE," + userID);
 
 
             }
@@ -158,7 +164,11 @@ namespace CCTV_Client
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            setView();
+
             Connect();
+
+            
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -238,6 +248,44 @@ namespace CCTV_Client
         }
 
 
+        #endregion
+
+        #region 저장버튼
+        private void btnIDsave_Click(object sender, EventArgs e)
+        {
+            RegistryKey reg;
+            reg = Registry.CurrentUser.CreateSubKey("Software").CreateSubKey("CCTVCLIENT");
+
+            reg.SetValue("userID", txtUserID.Text);
+        }
+
+        private void btnIPsave_Click(object sender, EventArgs e)
+        {
+            RegistryKey reg;
+            reg = Registry.CurrentUser.CreateSubKey("Software").CreateSubKey("CCTVCLIENT");
+
+            reg.SetValue("serverIP", txtServerIP.Text);
+        }
+        #endregion
+
+        #region view 초기화
+        public void setView()
+        {
+            RegistryKey reg;
+            reg = Registry.CurrentUser.CreateSubKey("Software").CreateSubKey("CCTVCLIENT");
+
+            serverIP = reg.GetValue("serverIP", "값이 없습니다").ToString();
+            txtServerIP.Text = serverIP;
+
+            userID = reg.GetValue("userID", "값이 없습니다").ToString();
+            txtUserID.Text = userID;
+
+            if(userID == "값이 없습니다")
+            {
+                txtUserID.ReadOnly = false;
+
+            }
+        }
         #endregion
     }
 }

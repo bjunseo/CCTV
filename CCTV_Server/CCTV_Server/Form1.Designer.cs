@@ -53,6 +53,7 @@
             this.connect = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timer_connect = new System.Windows.Forms.Timer(this.components);
+            this.txtLog = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -112,6 +113,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.txtLog);
             this.panel2.Controls.Add(this.groupBox1);
             this.panel2.Controls.Add(this.CCTV);
             this.panel2.Controls.Add(this.btnUser);
@@ -309,6 +311,14 @@
             this.timer_connect.Interval = 5000;
             this.timer_connect.Tick += new System.EventHandler(this.timer_connect_Tick);
             // 
+            // txtLog
+            // 
+            this.txtLog.Location = new System.Drawing.Point(616, 7);
+            this.txtLog.Multiline = true;
+            this.txtLog.Name = "txtLog";
+            this.txtLog.Size = new System.Drawing.Size(979, 122);
+            this.txtLog.TabIndex = 8;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -323,6 +333,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.CCTV.ResumeLayout(false);
@@ -363,6 +374,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn connect;
         private System.Windows.Forms.DataGridViewTextBoxColumn ID;
         private System.Windows.Forms.Timer timer_connect;
+        private System.Windows.Forms.TextBox txtLog;
     }
 }
 
