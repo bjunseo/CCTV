@@ -29,12 +29,12 @@ namespace CCTV_Server
 
         TcpServer tcpServer;
 
-        TcpClient Master;
 
         Thread frameDecodeThread;
 
         string cctvIP;
         string masterIP;
+        int port = 6000;
 
         // After adding the DLL to the project, change the "Copy to Output Directory" value to "Copy If newer".
         string dllPath = Path.Combine(Environment.CurrentDirectory, "FFmpeg.AutoGen", "bin", "x64");
@@ -52,12 +52,12 @@ namespace CCTV_Server
         {
             try
             {
-                tcpServer = new TcpServer(5000);
+                tcpServer = new TcpServer(port);
                 tcpServer.RunEvent += RunEvent;
                 tcpServer.StartServer();
-                
+
                 Console.WriteLine("Socket Open Success!!");
-                txtLog.Text += "★★★Socket Open Success!!★★★\r\n";
+                txtLog.Text += "==================== Socket Open Success!! =====================\r\n";
             }
             catch (Exception e)
             {
@@ -72,8 +72,6 @@ namespace CCTV_Server
         public Form1()
         {
             InitializeComponent();
-
-            
         }
         #endregion
 
@@ -83,17 +81,18 @@ namespace CCTV_Server
             if(ConnectionTest())
             {
                 Console.WriteLine("DB connet!!");
-                txtLog.Text += "★★★★★★DB connet!!★★★★★★\r\n";
+                txtLog.Text += "DB connet!!\r\n";
             }
             else
             {
-                Console.WriteLine("☆★☆★☆★ DB not connet!! ☆★☆★☆★");
+                Console.WriteLine(" DB not connet!! ");
+                txtLog.Text += "DB not connet!!\r\n";
             }
 
             setView();
             
 
-            connectMaster();
+            
 
             rtspAddr = $"rtsp://admin:dmenc001!@{cctvIP}:554/ISAPI/streaming/channels/101";
             httpAddr = $"http://admin:dmenc001!@{cctvIP}:80/ISAPI/Streaming/channels/102/httpPreview";
@@ -106,12 +105,11 @@ namespace CCTV_Server
             frameDecodeThread.Start();
 
             Start();
+            //connectMaster();
 
             dgvUser.AutoGenerateColumns = false;
 
             selectUserInfo();
-
-
 
             init = true;
         }
@@ -132,7 +130,16 @@ namespace CCTV_Server
 
         public void connectMaster()
         {
-            
+            try
+            {
+                //Master = new MasterConn("Door", masterIP, 6000);
+                //Master.MasterEvent += new MasterConn.RunEventHandler(MRunEvent);
+                //Master.Start();
+            }
+            catch(Exception ex)
+            {
+                txtLog.Text += ex.ToString() + "\r\n";
+            }
 
         }
 
@@ -233,7 +240,7 @@ namespace CCTV_Server
                             {
                                 string name = ""; 
 
-                                Console.WriteLine(datas[0] + " connect userID : " + datas[2]);
+                                Console.WriteLine(" connect userID : " + datas[2]);
                                 
                                 foreach (DataGridViewRow row in dgvUser.Rows)
                                 {
@@ -260,12 +267,12 @@ namespace CCTV_Server
                                 {
                                     this.Invoke(new MethodInvoker(delegate ()
                                     {
-                                        txtLog.Text += "connect userID : " + datas[2] + "\r\n";
+                                        txtLog.Text += "Connect userID : " + datas[2] + "\r\n";
                                     }));
                                 }
                                 else
                                 {
-                                    this.txtLog.Text += "connect userID : " + datas[2] + "\r\n";
+                                    this.txtLog.Text += "Connect userID : " + datas[2] + "\r\n";
                                 }
                                 
                             }
@@ -301,8 +308,12 @@ namespace CCTV_Server
                                 }
                             }
 
-                            if (datas[1] == "OPEN")
+                            if (datas[1] == "DOOR")
                             {
+                                //Master.SendData("200000,DOOR,OK,");
+
+                                tcpServer.SendData(masterIP, "200000,DOOR,OK,");
+
                                 this.Invoke(new MethodInvoker(delegate ()
                                 {
                                     Console.WriteLine("Open userID : " + datas[2]);
@@ -310,6 +321,15 @@ namespace CCTV_Server
                                 }));
                             }
 
+                            break;
+                        }
+                    case "MSG":
+                        {
+                            this.Invoke(new MethodInvoker(delegate ()
+                            {
+                                txtLog.Text += data + "\r\n";
+                            }));
+                            
                             break;
                         }
                     default: { break; }
@@ -323,6 +343,49 @@ namespace CCTV_Server
         }
         #endregion
 
+        #region master runevent
+        private void MRunEvent(string type, string data)
+        {
+            try
+            {
+                string[] datas = data.Split(',');
+
+                switch (type)
+                {
+                    case "MRUN":
+                        {
+                            
+
+                            break;
+                        }
+                    case "DOOR":
+                        {
+
+
+                            break;
+                        }
+                    case "ERR":
+                        {
+                            txtLog.Text += data + "\r\n";
+
+                            break;
+                        }
+                    case "CONN":
+                        {
+                            txtLog.Text += data + "\r\n";
+
+                            break;
+                        }
+                    default: { break; }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        #endregion
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -503,6 +566,7 @@ namespace CCTV_Server
 
         #endregion
 
+        #region 유저 관리
         private void btnAdd_Click(object sender, EventArgs e)
         {
             string sql1 = "insert into UserMng ([user], [level], [ID]) values ('',0,'')";
@@ -593,5 +657,7 @@ namespace CCTV_Server
                 dgvUser.DataSource = dt;
             }
         }
+        #endregion
+
     }
 }

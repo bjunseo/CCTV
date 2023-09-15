@@ -53,7 +53,7 @@ namespace CCTV_Client
         {
             try
             {
-                socket = new SocketManager("", serverIP, 5000);
+                socket = new SocketManager("", serverIP, 6000);
 
                 if (IsConnected == false)
                 {
@@ -190,7 +190,7 @@ namespace CCTV_Client
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            socket.SendData_("CLIENT,OPEN,1");
+            socket.SendData_("CLIENT,DOOR,1");
 
         }
 

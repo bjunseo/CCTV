@@ -20,7 +20,6 @@ namespace CCTV_Server
 
         private Thread thread = null;
 
-
         #region 변수
 
         public class socketInfo
@@ -42,7 +41,7 @@ namespace CCTV_Server
 
         private int Port;
         private ArrayList SocketClients;
-
+        private string masterIP;
 
         private Thread ReceiveThread;
         private NetworkStream NetworkStream;
@@ -69,8 +68,9 @@ namespace CCTV_Server
                     return;
                 }
 
+
                 // Open Tcp Socket Server!
-                IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 5000);
+                IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 6000);
                 tcpServer = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 tcpServer.Bind(endPoint);
                 tcpServer.Listen(50);
@@ -80,6 +80,9 @@ namespace CCTV_Server
 
                 // 소켓 연결 대기
                 tcpServer.AcceptAsync(socketArgs);
+
+                RunEvent("MSG", IPAddress.Any + " Event Server Open Start");
+
             }
             catch (Exception exception)
             {
@@ -95,8 +98,6 @@ namespace CCTV_Server
             {
                 System.Net.Sockets.Socket clientSocket = e.AcceptSocket;
                 IPEndPoint clientEndPoint = (IPEndPoint)clientSocket.RemoteEndPoint;
-
-                Console.WriteLine("client: [" + clientEndPoint.Address.ToString() + "] connected");
 
                 if (clientSocket.Connected)
                 {
@@ -128,6 +129,10 @@ namespace CCTV_Server
                     // 클라이언트 접속성공 처리
                     SocketClients.Add(client);
                     //CallEvent("ACCEPT", clientIP);
+
+                    Console.WriteLine("client: [" + clientEndPoint.Address.ToString() + "] connected");
+
+                    RunEvent("MSG", "client: [" + clientEndPoint.Address.ToString() + "] connected");
                 }
 
                 // 소켓 연결 대기
@@ -146,9 +151,7 @@ namespace CCTV_Server
         {
             try
             {
-                
                     RunEvent(type, message);
-
             }
             catch (Exception exception)
             {

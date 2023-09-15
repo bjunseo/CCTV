@@ -41,17 +41,17 @@
             // 
             // camDisplay
             // 
-            this.camDisplay.Location = new System.Drawing.Point(13, 46);
+            this.camDisplay.Location = new System.Drawing.Point(14, 52);
             this.camDisplay.Name = "camDisplay";
-            this.camDisplay.Size = new System.Drawing.Size(775, 575);
+            this.camDisplay.Size = new System.Drawing.Size(1112, 640);
             this.camDisplay.TabIndex = 0;
             this.camDisplay.TabStop = false;
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(12, 627);
+            this.btnOpen.Location = new System.Drawing.Point(14, 698);
             this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(775, 55);
+            this.btnOpen.Size = new System.Drawing.Size(1114, 55);
             this.btnOpen.TabIndex = 1;
             this.btnOpen.Text = "문열기";
             this.btnOpen.UseVisualStyleBackColor = true;
@@ -116,7 +116,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 694);
+            this.ClientSize = new System.Drawing.Size(1138, 755);
             this.Controls.Add(this.btnIPsave);
             this.Controls.Add(this.btnIDsave);
             this.Controls.Add(this.txtServerIP);
