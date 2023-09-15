@@ -34,6 +34,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.txtLog = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnMasterSave = new System.Windows.Forms.Button();
             this.txtMasterIp = new System.Windows.Forms.TextBox();
@@ -48,12 +49,11 @@
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.dgvUser = new System.Windows.Forms.DataGridView();
+            this.timer_connect = new System.Windows.Forms.Timer(this.components);
             this.User = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.level = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.connect = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IP = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.timer_connect = new System.Windows.Forms.Timer(this.components);
-            this.txtLog = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -122,6 +122,14 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1639, 142);
             this.panel2.TabIndex = 5;
+            // 
+            // txtLog
+            // 
+            this.txtLog.Location = new System.Drawing.Point(616, 7);
+            this.txtLog.Multiline = true;
+            this.txtLog.Name = "txtLog";
+            this.txtLog.Size = new System.Drawing.Size(979, 122);
+            this.txtLog.TabIndex = 8;
             // 
             // groupBox1
             // 
@@ -269,7 +277,7 @@
             this.dgvUser.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.User,
             this.level,
-            this.connect,
+            this.IP,
             this.ID});
             this.dgvUser.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvUser.Location = new System.Drawing.Point(0, 0);
@@ -280,6 +288,11 @@
             this.dgvUser.TabIndex = 3;
             this.dgvUser.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvUser_CellValueChanged);
             this.dgvUser.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvUser_KeyDown);
+            // 
+            // timer_connect
+            // 
+            this.timer_connect.Interval = 5000;
+            this.timer_connect.Tick += new System.EventHandler(this.timer_connect_Tick);
             // 
             // User
             // 
@@ -293,11 +306,10 @@
             this.level.HeaderText = "권한";
             this.level.Name = "level";
             // 
-            // connect
+            // IP
             // 
-            this.connect.FillWeight = 50F;
-            this.connect.HeaderText = "사용중";
-            this.connect.Name = "connect";
+            this.IP.HeaderText = "IP";
+            this.IP.Name = "IP";
             // 
             // ID
             // 
@@ -305,19 +317,6 @@
             this.ID.HeaderText = "ID";
             this.ID.Name = "ID";
             this.ID.Visible = false;
-            // 
-            // timer_connect
-            // 
-            this.timer_connect.Interval = 5000;
-            this.timer_connect.Tick += new System.EventHandler(this.timer_connect_Tick);
-            // 
-            // txtLog
-            // 
-            this.txtLog.Location = new System.Drawing.Point(616, 7);
-            this.txtLog.Multiline = true;
-            this.txtLog.Name = "txtLog";
-            this.txtLog.Size = new System.Drawing.Size(979, 122);
-            this.txtLog.TabIndex = 8;
             // 
             // Form1
             // 
@@ -369,12 +368,12 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnAdd;
-        private System.Windows.Forms.DataGridViewTextBoxColumn User;
-        private System.Windows.Forms.DataGridViewTextBoxColumn level;
-        private System.Windows.Forms.DataGridViewTextBoxColumn connect;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ID;
         private System.Windows.Forms.Timer timer_connect;
         private System.Windows.Forms.TextBox txtLog;
+        private System.Windows.Forms.DataGridViewTextBoxColumn User;
+        private System.Windows.Forms.DataGridViewTextBoxColumn level;
+        private System.Windows.Forms.DataGridViewTextBoxColumn IP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ID;
     }
 }
 

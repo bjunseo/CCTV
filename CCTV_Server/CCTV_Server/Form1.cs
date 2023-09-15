@@ -36,6 +36,8 @@ namespace CCTV_Server
         string masterIP;
         int port = 6000;
 
+
+
         // After adding the DLL to the project, change the "Copy to Output Directory" value to "Copy If newer".
         string dllPath = Path.Combine(Environment.CurrentDirectory, "FFmpeg.AutoGen", "bin", "x64");
         
@@ -45,6 +47,7 @@ namespace CCTV_Server
 
         bool init = false;
 
+        bool doorStat;
         #endregion
 
         #region socketStart 소켓을 연다
@@ -252,6 +255,8 @@ namespace CCTV_Server
                                         {
                                             dgvUser.Rows[i].DefaultCellStyle.BackColor = Color.LightYellow;
 
+                                            row.Cells["IP"].Value = datas[3];
+
                                             //if (this.dgvUser.InvokeRequired)
                                             //{
                                             //    this.Invoke(new MethodInvoker(delegate ()
@@ -279,6 +284,14 @@ namespace CCTV_Server
 
                             if (datas[1].Trim() == "CLOSE")
                             {
+                                foreach (Socket socket in tcpServer.connectedClients)
+                                {
+                                    if (!socket.Connected)
+                                    {
+                                        tcpServer.connectedClients.Remove(socket);
+                                    }
+                                }
+
                                 foreach (DataGridViewRow row in dgvUser.Rows)
                                 {
                                     int i = dgvUser.Rows.IndexOf(row);
@@ -312,7 +325,20 @@ namespace CCTV_Server
                             {
                                 //Master.SendData("200000,DOOR,OK,");
 
-                                tcpServer.SendData(masterIP, "200000,DOOR,OK,");
+                                if(datas.Length == 3)
+                                {
+                                    doorStat = false;
+
+                                    for (int i = 0; i < dgvUser.Rows.Count; i++)
+                                    {
+                                    }
+                                }
+                                if(datas.Length == 4)
+                                {
+                                    tcpServer.SendData(masterIP, "200000,DOOR,OK,");
+
+                                    doorStat = true;
+                                }
 
                                 this.Invoke(new MethodInvoker(delegate ()
                                 {
@@ -321,6 +347,10 @@ namespace CCTV_Server
                                 }));
                             }
 
+                            if(datas[1] == "MRUN")
+                            {
+                                tcpServer.SendData(masterIP, "200000,MRUN,OK,");
+                            }
                             break;
                         }
                     case "MSG":
@@ -343,53 +373,10 @@ namespace CCTV_Server
         }
         #endregion
 
-        #region master runevent
-        private void MRunEvent(string type, string data)
-        {
-            try
-            {
-                string[] datas = data.Split(',');
-
-                switch (type)
-                {
-                    case "MRUN":
-                        {
-                            
-
-                            break;
-                        }
-                    case "DOOR":
-                        {
-
-
-                            break;
-                        }
-                    case "ERR":
-                        {
-                            txtLog.Text += data + "\r\n";
-
-                            break;
-                        }
-                    case "CONN":
-                        {
-                            txtLog.Text += data + "\r\n";
-
-                            break;
-                        }
-                    default: { break; }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-        #endregion
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //tcpServer.sendData();
+            tcpServer.SendData("127.0.0.1", "SERVER,BELL");
         }
 
         #region CCTV,Master IP 저장 버튼 이벤트

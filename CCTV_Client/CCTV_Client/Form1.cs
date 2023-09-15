@@ -16,6 +16,7 @@ using OpenCvSharp;
 using System.Drawing.Imaging;
 using System.Web.UI.WebControls;
 using Microsoft.Win32;
+using System.Windows.Markup;
 
 namespace CCTV_Client
 {
@@ -49,15 +50,81 @@ namespace CCTV_Client
         string userID;
         #endregion
 
+        public void ReceiveEvent(string type, string data)
+        {
+            try
+            {
+                switch (type)
+                {
+                    case "RCV":
+                        {
+                            string[] datas = data.Split(',');
+
+                            if (datas[1] == "CONNECT")
+                            {
+                                
+
+                            }
+
+                            if (datas[1].Trim() == "CLOSE")
+                            {
+                                
+                            }
+
+                            if (datas[1] == "BELL")
+                            {
+                                this.Invoke(new MethodInvoker(delegate ()
+                                {
+                                    this.TopMost = true;
+                                    this.Focus();
+                                    this.TopMost = false;
+                                }));
+                            }
+
+                            break;
+                        }
+                    case "MSG":
+                        {
+                            this.Invoke(new MethodInvoker(delegate ()
+                            {
+
+                            }));
+
+                            break;
+                        }
+                    case "DISCONN":
+                        {
+                            this.Invoke(new MethodInvoker(delegate ()
+                            {
+                                labState.Text = "연결 안 됨";
+                                labState.ForeColor = Color.Red;
+                            }));
+
+                            break;
+                        }
+                    default: { break; }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
         public void Connect()
         {
             try
             {
                 socket = new SocketManager("", serverIP, 6000);
+                socket.ReceiveEvent += ReceiveEvent;
 
-                if (IsConnected == false)
+                socket.SendData_($"CLIENT,CONNECT,{userID}");
+
+                if (socket.IsConnected)
                 {
-                        socket.SendData_("CLIENT,CONNECT," + userID);
+                        labState.Text = "연결 잘 됨";
+                        labState.ForeColor = Color.GreenYellow;
 
                         Console.WriteLine("소켓 연결을 성공했습니다!!\r\n");
                 }
@@ -73,8 +140,6 @@ namespace CCTV_Client
             try
             {
                 socket.SendData_("CLIENT,CLOSE," + userID);
-
-
             }
             catch (Exception exception)
             {
@@ -168,7 +233,6 @@ namespace CCTV_Client
 
             Connect();
 
-            
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -287,5 +351,7 @@ namespace CCTV_Client
             }
         }
         #endregion
+
+
     }
 }

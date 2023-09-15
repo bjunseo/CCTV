@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.camDisplay = new System.Windows.Forms.PictureBox();
             this.btnOpen = new System.Windows.Forms.Button();
             this.UserID = new System.Windows.Forms.Label();
@@ -36,6 +37,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnIDsave = new System.Windows.Forms.Button();
             this.btnIPsave = new System.Windows.Forms.Button();
+            this.labState = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.SuspendLayout();
             // 
@@ -112,11 +115,23 @@
             this.btnIPsave.UseVisualStyleBackColor = true;
             this.btnIPsave.Click += new System.EventHandler(this.btnIPsave_Click);
             // 
+            // labState
+            // 
+            this.labState.AutoSize = true;
+            this.labState.Font = new System.Drawing.Font("굴림", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.labState.ForeColor = System.Drawing.Color.Red;
+            this.labState.Location = new System.Drawing.Point(949, 9);
+            this.labState.Name = "labState";
+            this.labState.Size = new System.Drawing.Size(179, 35);
+            this.labState.TabIndex = 8;
+            this.labState.Text = "연결 안 됨";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1138, 755);
+            this.Controls.Add(this.labState);
             this.Controls.Add(this.btnIPsave);
             this.Controls.Add(this.btnIDsave);
             this.Controls.Add(this.txtServerIP);
@@ -145,6 +160,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnIDsave;
         private System.Windows.Forms.Button btnIPsave;
+        private System.Windows.Forms.Label labState;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
