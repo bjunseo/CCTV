@@ -39,6 +39,7 @@
             this.btnIPsave = new System.Windows.Forms.Button();
             this.labState = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.btnAway = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.SuspendLayout();
             // 
@@ -118,6 +119,7 @@
             // labState
             // 
             this.labState.AutoSize = true;
+            this.labState.BackColor = System.Drawing.SystemColors.Desktop;
             this.labState.Font = new System.Drawing.Font("굴림", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.labState.ForeColor = System.Drawing.Color.Red;
             this.labState.Location = new System.Drawing.Point(949, 9);
@@ -126,11 +128,23 @@
             this.labState.TabIndex = 8;
             this.labState.Text = "연결 안 됨";
             // 
+            // btnAway
+            // 
+            this.btnAway.Location = new System.Drawing.Point(842, 8);
+            this.btnAway.Margin = new System.Windows.Forms.Padding(0);
+            this.btnAway.Name = "btnAway";
+            this.btnAway.Size = new System.Drawing.Size(104, 36);
+            this.btnAway.TabIndex = 9;
+            this.btnAway.Text = "자리비움";
+            this.btnAway.UseVisualStyleBackColor = true;
+            this.btnAway.Click += new System.EventHandler(this.btnAway_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1138, 755);
+            this.Controls.Add(this.btnAway);
             this.Controls.Add(this.labState);
             this.Controls.Add(this.btnIPsave);
             this.Controls.Add(this.btnIDsave);
@@ -162,6 +176,7 @@
         private System.Windows.Forms.Button btnIPsave;
         private System.Windows.Forms.Label labState;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button btnAway;
     }
 }
 

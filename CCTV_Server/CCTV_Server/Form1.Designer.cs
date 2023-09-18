@@ -54,6 +54,7 @@
             this.level = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IP = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.stat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -128,6 +129,7 @@
             this.txtLog.Location = new System.Drawing.Point(616, 7);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
+            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtLog.Size = new System.Drawing.Size(979, 122);
             this.txtLog.TabIndex = 8;
             // 
@@ -278,7 +280,8 @@
             this.User,
             this.level,
             this.IP,
-            this.ID});
+            this.ID,
+            this.stat});
             this.dgvUser.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvUser.Location = new System.Drawing.Point(0, 0);
             this.dgvUser.Name = "dgvUser";
@@ -308,6 +311,7 @@
             // 
             // IP
             // 
+            this.IP.DataPropertyName = "IP";
             this.IP.HeaderText = "IP";
             this.IP.Name = "IP";
             // 
@@ -317,6 +321,13 @@
             this.ID.HeaderText = "ID";
             this.ID.Name = "ID";
             this.ID.Visible = false;
+            // 
+            // stat
+            // 
+            this.stat.DataPropertyName = "stat";
+            this.stat.HeaderText = "stat";
+            this.stat.Name = "stat";
+            this.stat.Visible = false;
             // 
             // Form1
             // 
@@ -374,6 +385,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn level;
         private System.Windows.Forms.DataGridViewTextBoxColumn IP;
         private System.Windows.Forms.DataGridViewTextBoxColumn ID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn stat;
     }
 }
 

@@ -48,6 +48,8 @@ namespace CCTV_Client
 
         string serverIP;
         string userID;
+
+        bool awayStat = false;
         #endregion
 
         public void ReceiveEvent(string type, string data)
@@ -71,7 +73,7 @@ namespace CCTV_Client
                                 
                             }
 
-                            if (datas[1] == "BELL")
+                            if (datas[1] == "DOOR")
                             {
                                 this.Invoke(new MethodInvoker(delegate ()
                                 {
@@ -243,7 +245,7 @@ namespace CCTV_Client
                 frameDecodeThread.Abort();
 
                 Application.ExitThread();
-                Environment.Exit(0);
+                //Environment.Exit(0);
 
             }
             catch (Exception ex)
@@ -254,7 +256,7 @@ namespace CCTV_Client
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            socket.SendData_("CLIENT,DOOR,1");
+            socket.SendData_("CLIENT,DOOR,1,0");
 
         }
 
@@ -350,8 +352,24 @@ namespace CCTV_Client
 
             }
         }
+
         #endregion
 
-
+        private void btnAway_Click(object sender, EventArgs e)
+        {
+            if(awayStat == true)
+            {
+                socket.SendData_($"CLIENT,NAWAY,{userID}");
+                awayStat = false;
+                btnAway.BackColor = Color.LightGray;
+            }
+            else if (awayStat == false)
+            {
+                socket.SendData_($"CLIENT,AWAY,{userID}");
+                awayStat = true;
+                btnAway.BackColor = Color.DarkGray;
+            }
+            
+        }
     }
 }

@@ -205,7 +205,6 @@ namespace CCTV_Server
                 {
                     targetClient.SendData(data);
                     // 미루컨버터에 짧은 시간내 여러 패킷보내면 일부패킷응답이 안오는경우 있음.
-                    Thread.Sleep(800);
                 }
             }
             catch (Exception exception)

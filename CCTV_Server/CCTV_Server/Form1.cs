@@ -17,6 +17,7 @@ using System.Threading;
 using System.Diagnostics.Tracing;
 using Microsoft.Win32;
 using System.Data.SqlClient;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace CCTV_Server
 {
@@ -36,7 +37,7 @@ namespace CCTV_Server
         string masterIP;
         int port = 6000;
 
-
+        DataTable dtUser;
 
         // After adding the DLL to the project, change the "Copy to Output Directory" value to "Copy If newer".
         string dllPath = Path.Combine(Environment.CurrentDirectory, "FFmpeg.AutoGen", "bin", "x64");
@@ -257,6 +258,8 @@ namespace CCTV_Server
 
                                             row.Cells["IP"].Value = datas[3];
 
+                                            row.Cells["stat"].Value = "1";
+
                                             //if (this.dgvUser.InvokeRequired)
                                             //{
                                             //    this.Invoke(new MethodInvoker(delegate ()
@@ -325,31 +328,96 @@ namespace CCTV_Server
                             {
                                 //Master.SendData("200000,DOOR,OK,");
 
-                                if(datas.Length == 3)
+
+                                if(datas.Length == 4)
                                 {
                                     doorStat = false;
 
-                                    for (int i = 0; i < dgvUser.Rows.Count; i++)
+                                    //Thread thread = new Thread(() => ClientSend());
+
+                                    //thread.Start();
+
+                                    string ip;
+
+                                    for (int j = 0; j < 4; j++)
                                     {
+                                        if (doorStat == true)
+                                        {
+                                            doorStat = false;
+                                            return;
+                                        }
+
+                                        for (int i = 0; i < dgvUser.Rows.Count; i++)
+                                        {
+                                            if (dgvUser.Rows[i].Cells["level"].Value.ToString().Trim() == j.ToString() /*&&
+                        dgvUser.Rows[i].Cells["stat"].Value.ToString().Trim() == j.ToString()*/)
+                                            {
+                                                ip = dgvUser.Rows[i].Cells["IP"].Value.ToString().Split(':')[0];
+                                                tcpServer.SendData(ip, "200000,DOOR,OK,");
+                                            }
+                                        }
+
+                                        Thread.Sleep(3000);
                                     }
+                                   
+                                    
                                 }
-                                if(datas.Length == 4)
+                                if(datas.Length == 5)
                                 {
-                                    tcpServer.SendData(masterIP, "200000,DOOR,OK,");
 
+                                    if (doorStat != true)
+                                    {
+                                        tcpServer.SendData(masterIP, "200000,DOOR,OK,");
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+                                    
                                     doorStat = true;
-                                }
 
-                                this.Invoke(new MethodInvoker(delegate ()
-                                {
-                                    Console.WriteLine("Open userID : " + datas[2]);
-                                    txtLog.Text += "Open userID : " + datas[2] + "\r\n";
-                                }));
+                                    this.Invoke(new MethodInvoker(delegate ()
+                                    {
+                                        Console.WriteLine("Open userID : " + datas[2]);
+                                        txtLog.Text += "Open userID : " + datas[2] + "\r\n";
+                                    }));
+                                }
                             }
 
                             if(datas[1] == "MRUN")
                             {
                                 tcpServer.SendData(masterIP, "200000,MRUN,OK,");
+                            }
+
+                            if (datas[1] == "AWAY")
+                            {
+                                foreach (DataGridViewRow row in dgvUser.Rows)
+                                {
+                                    int i = dgvUser.Rows.IndexOf(row);
+
+                                    if (row.Cells["ID"].Value != null)
+                                    {
+                                        if (row.Cells["ID"].Value.ToString().Trim() == datas[2].Trim())
+                                        {
+                                            dgvUser.Rows[i].DefaultCellStyle.BackColor = Color.LightGray;
+                                        }
+                                    }
+                                }
+                            }
+                            if (datas[1] == "NAWAY")
+                            {
+                                foreach (DataGridViewRow row in dgvUser.Rows)
+                                {
+                                    int i = dgvUser.Rows.IndexOf(row);
+
+                                    if (row.Cells["ID"].Value != null)
+                                    {
+                                        if (row.Cells["ID"].Value.ToString().Trim() == datas[2].Trim())
+                                        {
+                                            dgvUser.Rows[i].DefaultCellStyle.BackColor = Color.LightYellow;
+                                        }
+                                    }
+                                }
                             }
                             break;
                         }
@@ -376,7 +444,7 @@ namespace CCTV_Server
 
         private void button1_Click(object sender, EventArgs e)
         {
-            tcpServer.SendData("127.0.0.1", "SERVER,BELL");
+            tcpServer.SendData("127.0.0.1", "SERVER,DOOR,");
         }
 
         #region CCTV,Master IP 저장 버튼 이벤트
@@ -529,7 +597,7 @@ namespace CCTV_Server
 
         public void selectUserInfo()
         {
-            string sql = "select * from UserMng";
+            string sql = "select [user], level, ID, '' as IP, '' as stat from UserMng";
 
             DataSet ds = new DataSet();
 
@@ -541,9 +609,9 @@ namespace CCTV_Server
                 da.Fill(ds);
 
             }
-            
-            DataTable dt = ds.Tables[0];
-            dgvUser.DataSource = dt;
+
+            dtUser = ds.Tables[0];
+            dgvUser.DataSource = dtUser;
         }
 
         private void dgvUser_KeyDown(object sender, KeyEventArgs e)
@@ -556,9 +624,9 @@ namespace CCTV_Server
         #region 유저 관리
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            string sql1 = "insert into UserMng ([user], [level], [ID]) values ('',0,'')";
+            string sql1 = "insert into UserMng ([user], [level]) values ('', '')";
 
-            string sql = "select * from UserMng";
+            string sql2 = "select  MAX(ID) from UserMng";
 
             DataSet ds = new DataSet();
 
@@ -569,13 +637,13 @@ namespace CCTV_Server
                 SqlCommand cmd = new SqlCommand(sql1, conn);
                 cmd.ExecuteNonQuery();
 
-                SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+                SqlDataAdapter da = new SqlDataAdapter(sql2, conn);
                 da.Fill(ds);
-
             }
 
             DataTable dt = ds.Tables[0];
-            dgvUser.DataSource = dt;
+
+            dtUser.Rows.Add("", 0, dt.Rows[0][0].ToString(), "", "");
         }
 
         private void timer_connect_Tick(object sender, EventArgs e)
@@ -586,18 +654,23 @@ namespace CCTV_Server
                 {
                     tcpServer.connectedClients.Remove(socket);
                 }
+                else
+                {
+                }
             }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            string id = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["ID"].Value.ToString(); 
+            if(dgvUser.SelectedRows.Count != 1)
+            {
+                MessageBox.Show("행을 제대로 선택해주세요");
+                return;
+            }
+
+            string id = dgvUser.Rows[dgvUser.SelectedRows[0].Index].Cells["ID"].Value.ToString(); 
 
             string sql1 = $"Delete from UserMng where ID = {id}";
-
-            string sql = "select * from UserMng";
-
-            DataSet ds = new DataSet();
 
             using (SqlConnection conn = new SqlConnection(connectString))
             {
@@ -605,28 +678,25 @@ namespace CCTV_Server
 
                 SqlCommand cmd = new SqlCommand(sql1, conn);
                 cmd.ExecuteNonQuery();
-
-                SqlDataAdapter da = new SqlDataAdapter(sql, conn);
-                da.Fill(ds);
             }
 
-            DataTable dt = ds.Tables[0];
-            dgvUser.DataSource = dt;
+            dtUser.Rows.RemoveAt(dgvUser.SelectedRows[0].Index);
         }
 
         private void dgvUser_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if(init)
             {
+                if ( dgvUser.Rows.Count < 1)
+                {
+                    return;
+                }
+
                 string id = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["ID"].Value.ToString();
                 string user = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["User"].Value.ToString();
                 string level = dgvUser.Rows[dgvUser.CurrentRow.Index].Cells["level"].Value.ToString();
 
                 string sql1 = $"UPDATE UserMng SET [user] = '{user}', [level] = {level} where ID = '{id}'";
-
-                string sql = "select * from UserMng";
-
-                DataSet ds = new DataSet();
 
                 using (SqlConnection conn = new SqlConnection(connectString))
                 {
@@ -634,17 +704,11 @@ namespace CCTV_Server
 
                     SqlCommand cmd = new SqlCommand(sql1, conn);
                     cmd.ExecuteNonQuery();
-
-                    SqlDataAdapter da = new SqlDataAdapter(sql, conn);
-                    da.Fill(ds);
-
                 }
-
-                DataTable dt = ds.Tables[0];
-                dgvUser.DataSource = dt;
             }
         }
         #endregion
+
 
     }
 }
