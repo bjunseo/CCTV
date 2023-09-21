@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.camDisplay = new System.Windows.Forms.PictureBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -43,18 +44,17 @@
             this.btnCCTVsave = new System.Windows.Forms.Button();
             this.txtCCTVIip = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnUser = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.dgvUser = new System.Windows.Forms.DataGridView();
-            this.timer_connect = new System.Windows.Forms.Timer(this.components);
             this.User = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.level = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IP = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.stat = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timer_connect = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -117,7 +117,6 @@
             this.panel2.Controls.Add(this.txtLog);
             this.panel2.Controls.Add(this.groupBox1);
             this.panel2.Controls.Add(this.CCTV);
-            this.panel2.Controls.Add(this.btnUser);
             this.panel2.Controls.Add(this.button1);
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
@@ -213,22 +212,13 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "IP : ";
             // 
-            // btnUser
-            // 
-            this.btnUser.Location = new System.Drawing.Point(6, 33);
-            this.btnUser.Name = "btnUser";
-            this.btnUser.Size = new System.Drawing.Size(104, 23);
-            this.btnUser.TabIndex = 5;
-            this.btnUser.Text = "유저관리";
-            this.btnUser.UseVisualStyleBackColor = true;
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(6, 6);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(104, 21);
+            this.button1.Size = new System.Drawing.Size(104, 123);
             this.button1.TabIndex = 4;
-            this.button1.Text = "신호";
+            this.button1.Text = "문열기";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -292,11 +282,6 @@
             this.dgvUser.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvUser_CellValueChanged);
             this.dgvUser.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvUser_KeyDown);
             // 
-            // timer_connect
-            // 
-            this.timer_connect.Interval = 5000;
-            this.timer_connect.Tick += new System.EventHandler(this.timer_connect_Tick);
-            // 
             // User
             // 
             this.User.DataPropertyName = "user";
@@ -329,14 +314,20 @@
             this.stat.Name = "stat";
             this.stat.Visible = false;
             // 
+            // timer_connect
+            // 
+            this.timer_connect.Interval = 5000;
+            this.timer_connect.Tick += new System.EventHandler(this.timer_connect_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1613, 879);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "CCTV-server";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).EndInit();
@@ -366,7 +357,6 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.GroupBox CCTV;
-        private System.Windows.Forms.Button btnUser;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox txtCCTVIip;

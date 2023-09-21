@@ -134,7 +134,7 @@ namespace CCTV_Client
             catch (Exception ex)
             {
                 Console.WriteLine("소켓 연결을 실패했습니다.\r\n" + ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
+                //Application.Exit();
             }
         }
         public void Close()
@@ -222,11 +222,18 @@ namespace CCTV_Client
         {
             InitializeComponent();
 
-            frameDecodeThread = new Thread(new ThreadStart(Run_frameDecodeThread));
-            frameDecodeThread.IsBackground = true;
-            FFmpegBinariesHelper.RegisterFFmpegBinaries(dllPath);
+            try
+            {
+                frameDecodeThread = new Thread(new ThreadStart(Run_frameDecodeThread));
+                frameDecodeThread.IsBackground = true;
+                FFmpegBinariesHelper.RegisterFFmpegBinaries(dllPath);
 
-            frameDecodeThread.Start();
+                frameDecodeThread.Start();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -246,17 +253,19 @@ namespace CCTV_Client
 
                 Application.ExitThread();
                 //Environment.Exit(0);
+                //
 
             }
             catch (Exception ex)
             {
-                
+                Application.ExitThread();
+                Environment.Exit(0);
             }
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            socket.SendData_("CLIENT,DOOR,1,0");
+            socket.SendData_($"CLIENT,OPEN,{userID}");
 
         }
 
@@ -264,53 +273,69 @@ namespace CCTV_Client
         #region 카메라 코드
         private unsafe void Run_frameDecodeThread()
         {
-            using (var decoder = new VideoStreamDecoder(rtspAddr))
+            try
             {
-                var srcSize = decoder.FrameSize;
-                var pixelFormat = decoder.PixelFormat;
-                var destSize = srcSize;
-                var destPixelFormat = FFmpeg.AutoGen.Abstractions.AVPixelFormat.AV_PIX_FMT_BGR24;
-
-                using (var frameConverter = new VideoFrameConverter(srcSize, pixelFormat, destSize, destPixelFormat))
+                using (var decoder = new VideoStreamDecoder(rtspAddr))
                 {
-                    while (decoder.TryDecodeNextFrame(out var frame))
-                    {
-                        var convertedframe = frameConverter.Convert(frame);
-                        var bitmap = new Bitmap(convertedframe.width, convertedframe.height,
-                            convertedframe.linesize[0], PixelFormat.Format24bppRgb, (IntPtr)convertedframe.data[0]);
+                    var srcSize = decoder.FrameSize;
+                    var pixelFormat = decoder.PixelFormat;
+                    var destSize = srcSize;
+                    var destPixelFormat = FFmpeg.AutoGen.Abstractions.AVPixelFormat.AV_PIX_FMT_BGR24;
 
-                        if (camDisplay.InvokeRequired)
+                    using (var frameConverter = new VideoFrameConverter(srcSize, pixelFormat, destSize, destPixelFormat))
+                    {
+                        while (decoder.TryDecodeNextFrame(out var frame))
                         {
-                            camDisplay.Invoke(new MethodInvoker(delegate {
-                                camDisplay.Image = bitmap;
-                            }));
+                            var convertedframe = frameConverter.Convert(frame);
+                            var bitmap = new Bitmap(convertedframe.width, convertedframe.height,
+                                convertedframe.linesize[0], PixelFormat.Format24bppRgb, (IntPtr)convertedframe.data[0]);
+
+                            if (camDisplay.InvokeRequired)
+                            {
+                                camDisplay.Invoke(new MethodInvoker(delegate {
+                                    camDisplay.Image = bitmap;
+                                }));
+                            }
+                            else camDisplay.Image = bitmap;
                         }
-                        else camDisplay.Image = bitmap;
                     }
                 }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private unsafe Mat AVframeToMat(FFmpeg.AutoGen.Abstractions.AVFrame* frame)
         {
-            int width = frame->width, height = frame->height;
-            int[] lSize = new int[1];
-            byte*[] pByteArr = new byte*[1];
+            try
+            {
+                int width = frame->width, height = frame->height;
+                int[] lSize = new int[1];
+                byte*[] pByteArr = new byte*[1];
 
-            Mat mat, tmpMat = new Mat(height, width, MatType.CV_8UC3);
-            FFmpeg.AutoGen.Abstractions.SwsContext* conversion;
-            pByteArr[0] = tmpMat.DataPointer;
-            lSize[0] = (int)tmpMat.Step1();
+                Mat mat, tmpMat = new Mat(height, width, MatType.CV_8UC3);
+                FFmpeg.AutoGen.Abstractions.SwsContext* conversion;
+                pByteArr[0] = tmpMat.DataPointer;
+                lSize[0] = (int)tmpMat.Step1();
 
-            conversion = FFmpeg.AutoGen.Abstractions.ffmpeg.sws_getContext(
-                width, height, (FFmpeg.AutoGen.Abstractions.AVPixelFormat)frame->format, width, height,
-                FFmpeg.AutoGen.Abstractions.AVPixelFormat.AV_PIX_FMT_BGR24, FFmpeg.AutoGen.Abstractions.ffmpeg.SWS_BICUBIC,
-                null, null, null);
-            FFmpeg.AutoGen.Abstractions.ffmpeg.sws_scale(conversion, frame->data, frame->linesize, 0, height, pByteArr, lSize);
-            mat = new Mat(height, width, MatType.CV_8UC3, (IntPtr)pByteArr[0]);
+                conversion = FFmpeg.AutoGen.Abstractions.ffmpeg.sws_getContext(
+                    width, height, (FFmpeg.AutoGen.Abstractions.AVPixelFormat)frame->format, width, height,
+                    FFmpeg.AutoGen.Abstractions.AVPixelFormat.AV_PIX_FMT_BGR24, FFmpeg.AutoGen.Abstractions.ffmpeg.SWS_BICUBIC,
+                    null, null, null);
+                FFmpeg.AutoGen.Abstractions.ffmpeg.sws_scale(conversion, frame->data, frame->linesize, 0, height, pByteArr, lSize);
+                mat = new Mat(height, width, MatType.CV_8UC3, (IntPtr)pByteArr[0]);
 
-            FFmpeg.AutoGen.Abstractions.ffmpeg.sws_freeContext(conversion);
-            return mat;
+                FFmpeg.AutoGen.Abstractions.ffmpeg.sws_freeContext(conversion);
+                return mat;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return new Mat();
+            }
+            
         }
 
 

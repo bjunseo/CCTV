@@ -328,14 +328,11 @@ namespace CCTV_Server
                             {
                                 //Master.SendData("200000,DOOR,OK,");
 
-
-                                if(datas.Length == 4)
+                                if (datas[2].Trim() != "OK")
                                 {
                                     doorStat = false;
 
-                                    //Thread thread = new Thread(() => ClientSend());
-
-                                    //thread.Start();
+                                    tcpServer.SendData(masterIP, "200000,DOOR,OK,");
 
                                     string ip;
 
@@ -353,35 +350,37 @@ namespace CCTV_Server
                         dgvUser.Rows[i].Cells["stat"].Value.ToString().Trim() == j.ToString()*/)
                                             {
                                                 ip = dgvUser.Rows[i].Cells["IP"].Value.ToString().Split(':')[0];
-                                                tcpServer.SendData(ip, "200000,DOOR,OK,");
+                                                tcpServer.SendData(ip, "200000,DOOR,");
                                             }
                                         }
 
-                                        Thread.Sleep(3000);
+                                        Thread.Sleep(10000);
                                     }
-                                   
-                                    
                                 }
-                                if(datas.Length == 5)
+                                else
                                 {
-
-                                    if (doorStat != true)
-                                    {
-                                        tcpServer.SendData(masterIP, "200000,DOOR,OK,");
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                    
-                                    doorStat = true;
-
-                                    this.Invoke(new MethodInvoker(delegate ()
-                                    {
-                                        Console.WriteLine("Open userID : " + datas[2]);
-                                        txtLog.Text += "Open userID : " + datas[2] + "\r\n";
-                                    }));
+                                   
                                 }
+                            }
+
+                            if (datas[1] == "OPEN")
+                            {
+                                if (doorStat != true)
+                                {
+                                    tcpServer.SendData(masterIP, "200000,DOOR,");
+                                }
+                                else
+                                {
+                                    break;
+                                }
+
+                                doorStat = true;
+
+                                this.Invoke(new MethodInvoker(delegate ()
+                                {
+                                    Console.WriteLine("Open userID : " + datas[2]);
+                                    txtLog.Text += "Open userID : " + datas[2] + "\r\n";
+                                }));
                             }
 
                             if(datas[1] == "MRUN")
@@ -444,7 +443,7 @@ namespace CCTV_Server
 
         private void button1_Click(object sender, EventArgs e)
         {
-            tcpServer.SendData("127.0.0.1", "SERVER,DOOR,");
+            tcpServer.SendData(masterIP, "200000,DOOR,");
         }
 
         #region CCTV,Master IP 저장 버튼 이벤트

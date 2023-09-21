@@ -141,7 +141,7 @@ namespace CCTV_Server
             }
             catch (Exception exception)
             {
-                //CallError(exception.Message);
+                Console.WriteLine(exception.Message);
             }
         }
         #endregion
@@ -155,7 +155,7 @@ namespace CCTV_Server
             }
             catch (Exception exception)
             {
-                //CallError("[" + MethodUtil.GetCalledMethodName() + "] " + exception.Message);
+                Console.WriteLine(exception.Message);
             }
         }
         #endregion
@@ -184,7 +184,7 @@ namespace CCTV_Server
             }
             catch (Exception exception)
             {
-                //CallError("[" + MethodUtil.GetCalledMethodName() + "] " + exception.Message);
+                Console.WriteLine(exception.Message);
             }
         }
         public void SendData(string clientIP, byte[] data)
@@ -209,7 +209,7 @@ namespace CCTV_Server
             }
             catch (Exception exception)
             {
-                //CallError("[" + MethodUtil.GetCalledMethodName() + "] " + exception.Message);
+                Console.WriteLine(exception.Message);
             }
         }
         #endregion
