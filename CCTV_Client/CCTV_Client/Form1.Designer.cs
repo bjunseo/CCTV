@@ -41,22 +41,23 @@
             this.labState = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnAway = new System.Windows.Forms.Button();
+            this.btnConnect = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).BeginInit();
             this.SuspendLayout();
             // 
             // camDisplay
             // 
-            this.camDisplay.Location = new System.Drawing.Point(14, 52);
+            this.camDisplay.Location = new System.Drawing.Point(14, 43);
             this.camDisplay.Name = "camDisplay";
-            this.camDisplay.Size = new System.Drawing.Size(1112, 640);
+            this.camDisplay.Size = new System.Drawing.Size(800, 459);
             this.camDisplay.TabIndex = 0;
             this.camDisplay.TabStop = false;
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(14, 698);
+            this.btnOpen.Location = new System.Drawing.Point(12, 508);
             this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(1114, 55);
+            this.btnOpen.Size = new System.Drawing.Size(400, 55);
             this.btnOpen.TabIndex = 1;
             this.btnOpen.Text = "문열기";
             this.btnOpen.UseVisualStyleBackColor = true;
@@ -65,15 +66,15 @@
             // UserID
             // 
             this.UserID.AutoSize = true;
-            this.UserID.Location = new System.Drawing.Point(12, 17);
+            this.UserID.Location = new System.Drawing.Point(12, 19);
             this.UserID.Name = "UserID";
-            this.UserID.Size = new System.Drawing.Size(50, 12);
+            this.UserID.Size = new System.Drawing.Size(24, 12);
             this.UserID.TabIndex = 2;
-            this.UserID.Text = "UserID :";
+            this.UserID.Text = "ID :";
             // 
             // txtUserID
             // 
-            this.txtUserID.Location = new System.Drawing.Point(68, 12);
+            this.txtUserID.Location = new System.Drawing.Point(40, 15);
             this.txtUserID.Name = "txtUserID";
             this.txtUserID.ReadOnly = true;
             this.txtUserID.Size = new System.Drawing.Size(137, 21);
@@ -81,7 +82,7 @@
             // 
             // txtServerIP
             // 
-            this.txtServerIP.Location = new System.Drawing.Point(386, 12);
+            this.txtServerIP.Location = new System.Drawing.Point(341, 14);
             this.txtServerIP.Name = "txtServerIP";
             this.txtServerIP.Size = new System.Drawing.Size(137, 21);
             this.txtServerIP.TabIndex = 5;
@@ -89,7 +90,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(320, 17);
+            this.label1.Location = new System.Drawing.Point(275, 19);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 12);
             this.label1.TabIndex = 4;
@@ -97,10 +98,10 @@
             // 
             // btnIDsave
             // 
-            this.btnIDsave.Location = new System.Drawing.Point(211, 13);
+            this.btnIDsave.Location = new System.Drawing.Point(180, 12);
             this.btnIDsave.Margin = new System.Windows.Forms.Padding(0);
             this.btnIDsave.Name = "btnIDsave";
-            this.btnIDsave.Size = new System.Drawing.Size(75, 21);
+            this.btnIDsave.Size = new System.Drawing.Size(65, 25);
             this.btnIDsave.TabIndex = 6;
             this.btnIDsave.Text = "ID저장";
             this.btnIDsave.UseVisualStyleBackColor = true;
@@ -108,10 +109,10 @@
             // 
             // btnIPsave
             // 
-            this.btnIPsave.Location = new System.Drawing.Point(529, 13);
+            this.btnIPsave.Location = new System.Drawing.Point(481, 12);
             this.btnIPsave.Margin = new System.Windows.Forms.Padding(0);
             this.btnIPsave.Name = "btnIPsave";
-            this.btnIPsave.Size = new System.Drawing.Size(75, 21);
+            this.btnIPsave.Size = new System.Drawing.Size(65, 25);
             this.btnIPsave.TabIndex = 7;
             this.btnIPsave.Text = "IP저장";
             this.btnIPsave.UseVisualStyleBackColor = true;
@@ -121,30 +122,42 @@
             // 
             this.labState.AutoSize = true;
             this.labState.BackColor = System.Drawing.SystemColors.Desktop;
-            this.labState.Font = new System.Drawing.Font("굴림", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.labState.ForeColor = System.Drawing.Color.Red;
-            this.labState.Location = new System.Drawing.Point(949, 9);
+            this.labState.Font = new System.Drawing.Font("굴림", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.labState.ForeColor = System.Drawing.Color.Black;
+            this.labState.Location = new System.Drawing.Point(687, 12);
             this.labState.Name = "labState";
-            this.labState.Size = new System.Drawing.Size(179, 35);
+            this.labState.Size = new System.Drawing.Size(114, 24);
             this.labState.TabIndex = 8;
-            this.labState.Text = "연결 안 됨";
+            this.labState.Text = "연       결";
             // 
             // btnAway
             // 
-            this.btnAway.Location = new System.Drawing.Point(842, 8);
+            this.btnAway.Location = new System.Drawing.Point(415, 508);
             this.btnAway.Margin = new System.Windows.Forms.Padding(0);
             this.btnAway.Name = "btnAway";
-            this.btnAway.Size = new System.Drawing.Size(104, 36);
+            this.btnAway.Size = new System.Drawing.Size(399, 55);
             this.btnAway.TabIndex = 9;
             this.btnAway.Text = "자리비움";
             this.btnAway.UseVisualStyleBackColor = true;
             this.btnAway.Click += new System.EventHandler(this.btnAway_Click);
             // 
+            // btnConnect
+            // 
+            this.btnConnect.Location = new System.Drawing.Point(616, 10);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(65, 25);
+            this.btnConnect.TabIndex = 10;
+            this.btnConnect.Text = "연결시도";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1138, 755);
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(834, 571);
+            this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.btnAway);
             this.Controls.Add(this.labState);
             this.Controls.Add(this.btnIPsave);
@@ -157,7 +170,7 @@
             this.Controls.Add(this.camDisplay);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "CCTVClient";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.camDisplay)).EndInit();
@@ -179,6 +192,7 @@
         private System.Windows.Forms.Label labState;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button btnAway;
+        private System.Windows.Forms.Button btnConnect;
     }
 }
 

@@ -98,8 +98,8 @@ namespace CCTV_Client
                         {
                             this.Invoke(new MethodInvoker(delegate ()
                             {
-                                labState.Text = "연결 안 됨";
-                                labState.ForeColor = Color.Red;
+                                labState.Text = "-Connect-";
+                                labState.ForeColor = Color.Black;
                             }));
 
                             break;
@@ -125,7 +125,7 @@ namespace CCTV_Client
 
                 if (socket.IsConnected)
                 {
-                        labState.Text = "연결 잘 됨";
+                        labState.Text = "-Connect-";
                         labState.ForeColor = Color.GreenYellow;
 
                         Console.WriteLine("소켓 연결을 성공했습니다!!\r\n");
@@ -148,6 +148,7 @@ namespace CCTV_Client
                 Console.WriteLine(exception.Message);
             }
         }
+
         public class AsyncObject
         {
             public byte[] Buffer;
@@ -162,59 +163,6 @@ namespace CCTV_Client
             public void ClearBuffer()
             {
                 Array.Clear(Buffer, 0, BufferSize);
-            }
-        }
-        //void ConnectCallback(IAsyncResult ar)
-        //{
-        //    try
-        //    {
-        //        Socket client = (Socket)ar.AsyncState;
-        //        client.EndConnect(ar);
-        //        AsyncObject obj = new AsyncObject(4096);
-        //        obj.WorkingSocket = server;
-        //        server.BeginReceive(obj.Buffer, 0, obj.BufferSize, 0, DataReceived, obj);
-
-        //        Console.WriteLine("붙음");
-
-        //        Send(Encoding.UTF8.GetBytes("123"));
-        //    }
-        //    catch (Exception e)
-        //    {
-        //    }
-        //}
-        void DataReceived()
-        {
-            while(true)
-            {
-                while (true)
-                {
-                    try
-                    {
-                        string packet = "";
-                        char[] rcvPacket = new char[1024];
-                        int rcvLen = StreamReader.Read(rcvPacket, 0, rcvPacket.Length);
-
-                        if (rcvLen > 0)
-                        {
-                            for (int i = 0; i < rcvLen; i++)
-                            {
-                                packet += (char)rcvPacket[i];
-                            }
-
-                            Console.WriteLine(packet);
-
-                            break;
-                        }
-                        // 데이터 획득
-
-
-                    }
-                    catch (Exception ex)
-                    {
-
-
-                    }
-                }
             }
         }
 
@@ -252,8 +200,8 @@ namespace CCTV_Client
                 frameDecodeThread.Abort();
 
                 Application.ExitThread();
-                //Environment.Exit(0);
-                //
+                Environment.Exit(0);
+                
 
             }
             catch (Exception ex)
@@ -279,7 +227,7 @@ namespace CCTV_Client
                 {
                     var srcSize = decoder.FrameSize;
                     var pixelFormat = decoder.PixelFormat;
-                    var destSize = srcSize;
+                    var destSize = new System.Drawing.Size(800, 450);
                     var destPixelFormat = FFmpeg.AutoGen.Abstractions.AVPixelFormat.AV_PIX_FMT_BGR24;
 
                     using (var frameConverter = new VideoFrameConverter(srcSize, pixelFormat, destSize, destPixelFormat))
@@ -301,9 +249,16 @@ namespace CCTV_Client
                     }
                 }
             }
-            catch(Exception ex)
+            catch(Exception exception)
             {
-                MessageBox.Show(ex.Message);
+                //Console.WriteLine(exception.Message);
+
+                //if(txtUserID.Text != "" || txtServerIP.Text != "")
+                //{
+                //    Application.ExitThread();
+                //    Environment.Exit(0);
+                //}
+                
             }
         }
 
@@ -333,6 +288,9 @@ namespace CCTV_Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+
+                Application.ExitThread();
+                Environment.Exit(0);
                 return new Mat();
             }
             
@@ -365,13 +323,13 @@ namespace CCTV_Client
             RegistryKey reg;
             reg = Registry.CurrentUser.CreateSubKey("Software").CreateSubKey("CCTVCLIENT");
 
-            serverIP = reg.GetValue("serverIP", "값이 없습니다").ToString();
+            serverIP = reg.GetValue("serverIP", "").ToString();
             txtServerIP.Text = serverIP;
 
-            userID = reg.GetValue("userID", "값이 없습니다").ToString();
+            userID = reg.GetValue("userID", "").ToString();
             txtUserID.Text = userID;
 
-            if(userID == "값이 없습니다")
+            if(userID.Trim() == "")
             {
                 txtUserID.ReadOnly = false;
 
@@ -395,6 +353,15 @@ namespace CCTV_Client
                 btnAway.BackColor = Color.DarkGray;
             }
             
+        }
+
+
+        private void btnConnect_Click(object sender, EventArgs e)
+        {
+            if(!socket.IsConnected)
+            {
+                Connect();
+            }
         }
     }
 }

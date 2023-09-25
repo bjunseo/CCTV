@@ -18,6 +18,7 @@ using System.Diagnostics.Tracing;
 using Microsoft.Win32;
 using System.Data.SqlClient;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Diagnostics.Eventing.Reader;
 
 namespace CCTV_Server
 {
@@ -94,9 +95,6 @@ namespace CCTV_Server
             }
 
             setView();
-            
-
-            
 
             rtspAddr = $"rtsp://admin:dmenc001!@{cctvIP}:554/ISAPI/streaming/channels/101";
             httpAddr = $"http://admin:dmenc001!@{cctvIP}:80/ISAPI/Streaming/channels/102/httpPreview";
@@ -132,20 +130,6 @@ namespace CCTV_Server
             txtMasterIp.Text = masterIP;
         }
 
-        public void connectMaster()
-        {
-            try
-            {
-                //Master = new MasterConn("Door", masterIP, 6000);
-                //Master.MasterEvent += new MasterConn.RunEventHandler(MRunEvent);
-                //Master.Start();
-            }
-            catch(Exception ex)
-            {
-                txtLog.Text += ex.ToString() + "\r\n";
-            }
-
-        }
 
         #endregion
 
@@ -171,30 +155,37 @@ namespace CCTV_Server
         #region 카메라쪽 코드
         private unsafe void Run_frameDecodeThread()
         {
-            using (var decoder = new VideoStreamDecoder(rtspAddr))
+            try
             {
-                var srcSize = decoder.FrameSize;
-                var pixelFormat = decoder.PixelFormat;
-                var destSize = srcSize;
-                var destPixelFormat = FFmpeg.AutoGen.Abstractions.AVPixelFormat.AV_PIX_FMT_BGR24;
-
-                using (var frameConverter = new VideoFrameConverter(srcSize, pixelFormat, destSize, destPixelFormat))
+                using (var decoder = new VideoStreamDecoder(rtspAddr))
                 {
-                    while (decoder.TryDecodeNextFrame(out var frame))
-                    {
-                        var convertedframe = frameConverter.Convert(frame);
-                        var bitmap = new Bitmap(convertedframe.width, convertedframe.height,
-                            convertedframe.linesize[0], PixelFormat.Format24bppRgb, (IntPtr)convertedframe.data[0]);
+                    var srcSize = decoder.FrameSize;
+                    var pixelFormat = decoder.PixelFormat;
+                    var destSize = srcSize;
+                    var destPixelFormat = FFmpeg.AutoGen.Abstractions.AVPixelFormat.AV_PIX_FMT_BGR24;
 
-                        if (camDisplay.InvokeRequired)
+                    using (var frameConverter = new VideoFrameConverter(srcSize, pixelFormat, destSize, destPixelFormat))
+                    {
+                        while (decoder.TryDecodeNextFrame(out var frame))
                         {
-                            camDisplay.Invoke(new MethodInvoker(delegate {
-                                camDisplay.Image = bitmap;
-                            }));
+                            var convertedframe = frameConverter.Convert(frame);
+                            var bitmap = new Bitmap(convertedframe.width, convertedframe.height,
+                                convertedframe.linesize[0], PixelFormat.Format24bppRgb, (IntPtr)convertedframe.data[0]);
+
+                            if (camDisplay.InvokeRequired)
+                            {
+                                camDisplay.Invoke(new MethodInvoker(delegate {
+                                    camDisplay.Image = bitmap;
+                                }));
+                            }
+                            else camDisplay.Image = bitmap;
                         }
-                        else camDisplay.Image = bitmap;
                     }
                 }
+            }
+            catch(Exception ex)
+            {
+
             }
         }
 
@@ -359,7 +350,7 @@ namespace CCTV_Server
                                 }
                                 else
                                 {
-                                   
+                                    doorStat = false;
                                 }
                             }
 
@@ -440,11 +431,12 @@ namespace CCTV_Server
         }
         #endregion
 
-
+        #region 문열기 버튼
         private void button1_Click(object sender, EventArgs e)
         {
             tcpServer.SendData(masterIP, "200000,DOOR,");
         }
+        #endregion
 
         #region CCTV,Master IP 저장 버튼 이벤트
         private void btnCCTVsave_Click(object sender, EventArgs e)

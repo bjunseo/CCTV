@@ -14,12 +14,6 @@ namespace CCTV_Server
 {
     class TcpServer
     {
-        public delegate void ReceiveData(string type, string data);
-        public ReceiveData RunEvent;
-
-
-        private Thread thread = null;
-
         #region 변수
 
         public class socketInfo
@@ -33,6 +27,12 @@ namespace CCTV_Server
                 ID = iD;
             }
         }
+
+        public delegate void ReceiveData(string type, string data);
+        public ReceiveData RunEvent;
+
+
+        private Thread thread = null;
 
         Socket server;
 
@@ -51,12 +51,13 @@ namespace CCTV_Server
         System.Net.Sockets.Socket tcpServer;
         #endregion
 
-        public TcpServer(int port) 
+        #region 생성자
+        public TcpServer(int port)
         {
             this.Port = port;
             this.SocketClients = new ArrayList();
         }
-
+        #endregion
 
         #region StartServer
         public void StartServer()
@@ -159,13 +160,6 @@ namespace CCTV_Server
             }
         }
         #endregion
-
-       
-
-        private void _Receive(Socket client)
-        {
-            
-        }
 
         #region SendData
         public void SendData(string clientIP, string data)
